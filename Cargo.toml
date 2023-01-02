@@ -20,7 +20,7 @@ thiserror = { version = "1.0.31", optional = true }
 
 [build-dependencies]
 anyhow = "1.0.65"
-chksum-build = { version = "0.0.2", default-features = false, features = ["script"] }
+chksum-build = { version = "0.0.3", default-features = false, features = ["script"] }
 
 [dev-dependencies]
 anyhow = "1.0.65"
