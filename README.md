@@ -24,7 +24,7 @@ Update your `Cargo.toml` by adding entry to `dependencies` section.
 ```toml
 [dependencies]
 # ...
-chksum-hash = "0.2.0"
+chksum-hash = "0.2.1"
 ```
 
 Alternatively use [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand.
