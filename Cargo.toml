@@ -22,9 +22,6 @@ thiserror = { version = "1.0.31", optional = true }
 anyhow = "1.0.65"
 chksum-build = { version = "0.0.3", default-features = false, features = ["script"] }
 
-[dev-dependencies]
-tempfile = "3.3.0"
-
 [features]
 default = ["error", "md5", "sha1", "sha2"]
 error = ["thiserror"]

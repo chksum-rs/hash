@@ -31,19 +31,14 @@
 //! Digest of data streams can be calculated chunk-by-chunk with consumer created by calling [`new`] function.
 //!
 //! ```rust
+//! # use std::io;
+//! # use std::path::PathBuf;
 //! use std::fs::File;
-//! # use std::io::{self, Write};
 //! use std::io::Read;
 //!
-//! # use tempfile::NamedTempFile;
 //! use chksum_hash::sha1;
 //!
-//! # fn wrapper() -> io::Result<()> {
-//! # let path = {
-//! #     let mut file = NamedTempFile::new()?;
-//! #     file.write(b"some data")?;
-//! #     file.path().to_path_buf()
-//! # };
+//! # fn wrapper(path: PathBuf) -> io::Result<()> {
 //! let mut file = File::open(path)?;
 //! let mut buffer = vec![0; 64];
 //! let mut hash = sha1::new();
@@ -70,22 +65,17 @@
 //! Digest of data stream can be verified with [`Update::verify`] or [`Finalize::verify`] methods.
 //!
 //! ```rust
+//! # use std::io;
+//! # use std::path::PathBuf;
 //! use std::fs::File;
-//! # use std::io::{self, Write};
 //! use std::io::Read;
 //!
-//! # use tempfile::NamedTempFile;
 //! use chksum_hash::sha1;
 //!
-//! # fn wrapper() -> io::Result<()> {
+//! # fn wrapper(path: PathBuf) -> io::Result<()> {
 //! let digest_lowercase = sha1::hash("some data");
 //! let digest_uppercase = sha1::hash("SOME DATA");
 //!
-//! # let path = {
-//! #     let mut file = NamedTempFile::new()?;
-//! #     file.write(b"some data")?;
-//! #     file.path().to_path_buf()
-//! # };
 //! let mut file = File::open(path)?;
 //! let mut buffer = vec![0; 64];
 //! let mut hash = sha1::new();
