@@ -36,7 +36,7 @@ const K: [u32; 64] = [
 ///
 /// let state = sha2::sha256::state::new();
 /// ```
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 pub const fn new() -> State {
     State::new()
 }
@@ -185,13 +185,13 @@ impl State {
     ///     ]
     /// );
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     pub const fn digest(&self) -> [u32; LENGTH_DWORDS] {
         [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h]
     }
 
     #[allow(clippy::too_many_arguments)]
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     const fn from_raw(a: u32, b: u32, c: u32, d: u32, e: u32, f: u32, g: u32, h: u32) -> Self {
         Self { a, b, c, d, e, f, g, h }
     }
@@ -205,7 +205,7 @@ impl State {
     ///
     /// let state = sha2::sha256::state::new();
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     const fn new() -> Self {
         let [a, b, c, d, e, f, g, h] = H;
         Self::from_raw(a, b, c, d, e, f, g, h)
@@ -224,12 +224,12 @@ impl State {
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
     pub fn update(&mut self, block: [u32; block::LENGTH_DWORDS]) -> &mut Self {
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn small_sigma0(x: u32) -> u32 {
             x.rotate_right(7) ^ x.rotate_right(18) ^ (x >> 3)
         }
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn small_sigma1(x: u32) -> u32 {
             x.rotate_right(17) ^ x.rotate_right(19) ^ (x >> 10)
         }
@@ -448,28 +448,28 @@ impl State {
 
         let (a, b, c, d, e, f, g, h) = (self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h);
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn ch(x: u32, y: u32, z: u32) -> u32 {
             (x & y) ^ (!x & z)
         }
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn maj(x: u32, y: u32, z: u32) -> u32 {
             (x & y) ^ (x & z) ^ (y & z)
         }
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn capital_sigma0(x: u32) -> u32 {
             x.rotate_right(2) ^ x.rotate_right(13) ^ x.rotate_right(22)
         }
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn capital_sigma1(x: u32) -> u32 {
             x.rotate_right(6) ^ x.rotate_right(11) ^ x.rotate_right(25)
         }
 
         #[allow(clippy::too_many_arguments)]
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         #[rustfmt::skip]
         const fn round(a: u32, b: u32, c: u32, d: u32, e: u32, f: u32, g: u32, h: u32, w: u32, k: u32) -> (u32, u32, u32, u32, u32, u32, u32, u32) {
             let t1 = h
@@ -596,7 +596,7 @@ impl State {
     ///     ]
     /// );
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     pub fn reset(&mut self) -> &mut Self {
         [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h] = H;
         self

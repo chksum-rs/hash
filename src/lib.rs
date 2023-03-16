@@ -49,6 +49,7 @@
 //! ## Compilation
 //!
 //! * `error`: Adds [`Error`] related implementations.
+//! * `inline`: Adds `#[inline]` attribute to some methods on release build.
 //!
 //! By default all of them are enabled.
 //!
@@ -125,7 +126,7 @@ pub enum Algorithm {
 
 impl Algorithm {
     /// Returns iterator through all algorithms.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn into_iter() -> IntoIter<Self> {
         let algorithms = vec![
@@ -146,7 +147,7 @@ impl Algorithm {
     }
 
     /// Returns digest bits.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub const fn digest_bits(&self) -> usize {
         match self {
@@ -167,7 +168,7 @@ impl Algorithm {
 }
 
 impl Display for Algorithm {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         match self {
             #[cfg(feature = "md5")]
@@ -249,7 +250,7 @@ pub enum Digest {
 
 impl Digest {
     /// Returns digest bytes as a byte slice.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     pub const fn as_bytes(&self) -> &[u8] {
         match self {
             #[cfg(feature = "md5")]
@@ -274,7 +275,7 @@ impl Digest {
     }
 
     /// Returns lowercase hexadecimal representation of digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn to_hex_lowercase(&self) -> String {
         match self {
@@ -300,7 +301,7 @@ impl Digest {
     }
 
     /// Returns uppercase hexadecimal representation of digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn to_hex_uppercase(&self) -> String {
         match self {
@@ -327,7 +328,7 @@ impl Digest {
 }
 
 impl AsRef<[u8]> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn as_ref(&self) -> &[u8] {
         self.as_bytes()
     }
@@ -336,7 +337,7 @@ impl AsRef<[u8]> for Digest {
 #[cfg(feature = "md5")]
 #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
 impl From<md5::Digest> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: md5::Digest) -> Self {
         Self::MD5(digest)
     }
@@ -345,7 +346,7 @@ impl From<md5::Digest> for Digest {
 #[cfg(feature = "sha1")]
 #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
 impl From<sha1::Digest> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha1::Digest) -> Self {
         Self::SHA1(digest)
     }
@@ -354,7 +355,7 @@ impl From<sha1::Digest> for Digest {
 #[cfg(feature = "sha2-224")]
 #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
 impl From<sha2::sha224::Digest> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha224::Digest) -> Self {
         Self::SHA2_224(digest)
     }
@@ -363,7 +364,7 @@ impl From<sha2::sha224::Digest> for Digest {
 #[cfg(feature = "sha2-256")]
 #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
 impl From<sha2::sha256::Digest> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha256::Digest) -> Self {
         Self::SHA2_256(digest)
     }
@@ -372,7 +373,7 @@ impl From<sha2::sha256::Digest> for Digest {
 #[cfg(feature = "sha2-384")]
 #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
 impl From<sha2::sha384::Digest> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha384::Digest) -> Self {
         Self::SHA2_384(digest)
     }
@@ -381,14 +382,14 @@ impl From<sha2::sha384::Digest> for Digest {
 #[cfg(feature = "sha2-512")]
 #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
 impl From<sha2::sha512::Digest> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha512::Digest) -> Self {
         Self::SHA2_512(digest)
     }
 }
 
 impl LowerHex for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             #[cfg(feature = "md5")]
@@ -408,7 +409,7 @@ impl LowerHex for Digest {
 }
 
 impl UpperHex for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn fmt(&self, f: &mut Formatter<'_>) -> fmt::Result {
         match self {
             #[cfg(feature = "md5")]
@@ -430,14 +431,14 @@ impl UpperHex for Digest {
 /// Creates new hash instance.
 ///
 /// Check [`Update`] for more details.
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 #[must_use]
 pub fn new(algorithm: Algorithm) -> Update {
     Update::new(algorithm)
 }
 
 /// Computes hash of given input.
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 #[must_use]
 pub fn hash<T>(algorithm: Algorithm, data: T) -> Digest
 where
@@ -447,7 +448,7 @@ where
 }
 
 /// Verifies hash for given input.
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 #[must_use]
 pub fn verify<T>(algorithm: Algorithm, data: T, digest: Digest) -> bool
 where
@@ -499,7 +500,7 @@ pub enum Update {
 }
 
 impl Update {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     fn new(algorithm: Algorithm) -> Self {
         match algorithm {
@@ -519,7 +520,7 @@ impl Update {
     }
 
     /// Produces final digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn digest(&self) -> Digest {
         match self {
@@ -539,7 +540,7 @@ impl Update {
     }
 
     /// Applies padding and produces finalized state.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn finalize(&self) -> Finalize {
         match self {
@@ -565,7 +566,7 @@ impl Update {
     /// To achieve maximum performance length of incoming data parts should be multiply of block length.
     ///
     /// In any other case internal buffer is used which can cause speed down the performance.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     pub fn update<T>(&mut self, data: T) -> &mut Self
     where
         T: AsRef<[u8]>,
@@ -600,7 +601,7 @@ impl Update {
     }
 
     /// Resets state to default without any new memory allocations.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     pub fn reset(&mut self) -> &mut Self {
         match self {
             #[cfg(feature = "md5")]
@@ -632,7 +633,7 @@ impl Update {
     }
 
     /// Verifies processed data against given digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn verify(&self, digest: Digest) -> bool {
         self.digest() == digest
@@ -683,7 +684,7 @@ pub enum Finalize {
 
 impl Finalize {
     /// Produces digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn digest(&self) -> Digest {
         match self {
@@ -703,7 +704,7 @@ impl Finalize {
     }
 
     /// Resets state to default.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn reset(&self) -> Update {
         match self {
@@ -723,7 +724,7 @@ impl Finalize {
     }
 
     /// Verifies state against given digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn verify(&self, digest: Digest) -> bool {
         self.digest() == digest

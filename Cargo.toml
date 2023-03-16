@@ -23,8 +23,9 @@ anyhow = "1.0.65"
 chksum-build = { version = "0.0.3", default-features = false, features = ["script"] }
 
 [features]
-default = ["error", "md5", "sha1", "sha2"]
+default = ["error", "inline", "md5", "sha1", "sha2"]
 error = ["thiserror"]
+inline = []
 md5 = []
 sha1 = []
 sha2 = ["sha2-224", "sha2-256", "sha2-384", "sha2-512"]

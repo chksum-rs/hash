@@ -158,7 +158,7 @@ use state::State;
 ///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 /// );
 /// ```
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 #[must_use]
 pub fn new() -> Update {
     Update::new()
@@ -177,7 +177,7 @@ pub fn new() -> Update {
 ///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 /// );
 /// ```
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 #[must_use]
 pub fn hash<T>(data: T) -> Digest
 where
@@ -197,7 +197,7 @@ where
 /// assert_eq!(sha2::sha256::verify("data", digest), true);
 /// assert_eq!(sha2::sha256::verify("DATA", digest), false);
 /// ```
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 #[must_use]
 pub fn verify<T>(data: T, digest: Digest) -> bool
 where
@@ -215,7 +215,7 @@ pub struct Update {
 }
 
 impl Update {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     fn new() -> Self {
         let state = state::new();
@@ -228,7 +228,7 @@ impl Update {
         }
     }
 
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     fn update_chunks<'a>(&mut self, mut chunks: ChunksExact<'a, u8>) -> &'a [u8] {
         for chunk in chunks.by_ref() {
@@ -240,7 +240,7 @@ impl Update {
     }
 
     /// Produces final digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn digest(&self) -> Digest {
         self.finalize().digest()
@@ -368,7 +368,7 @@ impl Update {
     ///     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     /// );
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     pub fn reset(&mut self) -> &mut Self {
         self.state.reset();
         self.unprocessed.clear();
@@ -377,7 +377,7 @@ impl Update {
     }
 
     /// Verifies processed data against given digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn verify(&self, digest: Digest) -> bool {
         self.digest() == digest
@@ -392,21 +392,21 @@ pub struct Finalize {
 
 impl Finalize {
     /// Produces digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn digest(&self) -> Digest {
         self.state.into()
     }
 
     /// Resets state to default.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn reset(&self) -> Update {
         Update::new()
     }
 
     /// Verifies state against given digest.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn verify(&self, digest: Digest) -> bool {
         self.digest() == digest

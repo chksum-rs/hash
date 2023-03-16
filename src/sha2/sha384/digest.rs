@@ -42,14 +42,14 @@ pub struct Digest([u8; LENGTH_BYTES]);
 
 impl Digest {
     /// Returns digest bytes as a byte slice.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub const fn as_bytes(&self) -> &[u8] {
         &self.0
     }
 
     /// Creates new digest from incoming bytes.
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub const fn new(digest: [u8; LENGTH_BYTES]) -> Self {
         Self(digest)
@@ -82,7 +82,7 @@ impl Digest {
     ///     "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
     /// );
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn to_hex_lowercase(&self) -> String {
         format!("{self:x}")
@@ -113,7 +113,7 @@ impl Digest {
     ///     "38B060A751AC96384CD9327EB1B1E36A21FDB71114BE07434C0CC7BF63F6E1DA274EDEBFE76F65FBD51AD2F14898B95B"
     /// );
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
     pub fn to_hex_uppercase(&self) -> String {
         format!("{self:X}")
@@ -121,21 +121,21 @@ impl Digest {
 }
 
 impl AsRef<[u8]> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn as_ref(&self) -> &[u8] {
         self.as_bytes()
     }
 }
 
 impl From<[u8; LENGTH_BYTES]> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: [u8; LENGTH_BYTES]) -> Self {
         Self::new(digest)
     }
 }
 
 impl From<[u64; LENGTH_QWORDS]> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[rustfmt::skip]
     fn from(digest: [u64; LENGTH_QWORDS]) -> Self {
         let [a, b, c, d, e, f] = digest;
@@ -165,7 +165,7 @@ impl From<[u64; LENGTH_QWORDS]> for Digest {
 }
 
 impl From<State> for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[rustfmt::skip]
     fn from(State { a, b, c, d, e, f, g: _, h: _ }: State) -> Self {
         Self::from([a, b, c, d, e, f])
@@ -173,14 +173,14 @@ impl From<State> for Digest {
 }
 
 impl From<Digest> for [u8; LENGTH_BYTES] {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: Digest) -> Self {
         digest.0
     }
 }
 
 impl LowerHex for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[rustfmt::skip]
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         let digest = format!(
@@ -218,7 +218,7 @@ impl LowerHex for Digest {
 }
 
 impl UpperHex for Digest {
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     #[rustfmt::skip]
     fn fmt(&self, formatter: &mut Formatter) -> fmt::Result {
         let digest = format!(
@@ -260,7 +260,7 @@ impl UpperHex for Digest {
 impl TryFrom<&str> for Digest {
     type Error = Error;
 
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     fn try_from(digest: &str) -> Result<Self, Self::Error> {
         if digest.len() != LENGTH_HEX {
             let error = Self::Error::InvalidLength {

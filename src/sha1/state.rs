@@ -20,7 +20,7 @@ const E: u32 = 0xC3D2E1F0;
 ///
 /// let state = sha1::state::new();
 /// ```
-#[cfg_attr(release, inline)]
+#[cfg_attr(all(release, feature = "inline"), inline)]
 pub const fn new() -> State {
     State::new()
 }
@@ -146,19 +146,19 @@ impl State {
     ///     [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
     /// );
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     // #[must_use]
     pub const fn digest(&self) -> [u32; 5] {
         [self.a, self.b, self.c, self.d, self.e]
     }
 
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     // #[must_use]
     const fn from_raw(a: u32, b: u32, c: u32, d: u32, e: u32) -> Self {
         Self { a, b, c, d, e }
     }
 
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     // #[must_use]
     const fn new() -> Self {
         Self::from_raw(A, B, C, D, E)
@@ -269,13 +269,13 @@ impl State {
 
         // Step 1
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn f(x: u32, y: u32, z: u32) -> u32 {
             (x & y) | (!x & z)
         }
 
         #[allow(clippy::unreadable_literal)]
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn ff(a: u32, b: u32, c: u32, d: u32, e: u32, data: u32) -> u32 {
             a.rotate_left(5)
                 .wrapping_add(f(b, c, d))
@@ -307,13 +307,13 @@ impl State {
 
         // Step 2
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn g(x: u32, y: u32, z: u32) -> u32 {
             x ^ y ^ z
         }
 
         #[allow(clippy::unreadable_literal)]
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn gg(a: u32, b: u32, c: u32, d: u32, e: u32, data: u32) -> u32 {
             a.rotate_left(5)
                 .wrapping_add(g(b, c, d))
@@ -345,13 +345,13 @@ impl State {
 
         // Step 3
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn h(x: u32, y: u32, z: u32) -> u32 {
             (x & y) | (x & z) | (y & z)
         }
 
         #[allow(clippy::unreadable_literal)]
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn hh(a: u32, b: u32, c: u32, d: u32, e: u32, data: u32) -> u32 {
             a.rotate_left(5)
                 .wrapping_add(h(b, c, d))
@@ -383,13 +383,13 @@ impl State {
 
         // Step 4
 
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn i(x: u32, y: u32, z: u32) -> u32 {
             x ^ y ^ z
         }
 
         #[allow(clippy::unreadable_literal)]
-        #[cfg_attr(release, inline)]
+        #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn ii(a: u32, b: u32, c: u32, d: u32, e: u32, data: u32) -> u32 {
             a.rotate_left(5)
                 .wrapping_add(i(b, c, d))
@@ -450,7 +450,7 @@ impl State {
     ///     [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
     /// );
     /// ```
-    #[cfg_attr(release, inline)]
+    #[cfg_attr(all(release, feature = "inline"), inline)]
     pub fn reset(&mut self) -> &mut Self {
         self.a = A;
         self.b = B;
