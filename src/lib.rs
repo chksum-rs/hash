@@ -95,6 +95,7 @@ pub use error::{Error, Result};
 
 /// Represents hash algorithm.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum Algorithm {
     /// MD5 hash function implemented in [`md5`] module.
     #[cfg(feature = "md5")]
@@ -206,6 +207,7 @@ pub use Algorithm::SHA2_512;
 
 /// Represents hash digest.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum Digest {
     /// Digest of MD5 hash function implemented in [`md5`] module.
     ///
@@ -456,6 +458,7 @@ where
 
 /// Represents in-progress hash state.
 #[derive(Clone, Debug, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum Update {
     /// In-progress state of MD5 hash function implemented in [`md5`] module.
     ///
@@ -638,6 +641,7 @@ impl Update {
 
 /// Represents finalized state.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
+#[non_exhaustive]
 pub enum Finalize {
     /// Finalized state of MD5 hash function implemented in [`md5`] module.
     ///

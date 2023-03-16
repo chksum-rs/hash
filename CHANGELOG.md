@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `pub use` for `Algorithm` variants.
 
+### Changed
+
+- Changed `Algorithm`, `Update`, `Finalized` and `Digest` enums as non-exhaustive.
+
 ## [0.2.1] - 2023-01-02
 
 ### Fixed
