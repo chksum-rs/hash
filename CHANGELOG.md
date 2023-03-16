@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added `pub use` for `Algorithm` variants.
 - Added `inline` feature.
+- Added tests for `verify` methods.
 
 ### Changed
 

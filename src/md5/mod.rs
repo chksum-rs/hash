@@ -440,6 +440,19 @@ mod tests {
     }
 
     #[test]
+    fn test_verify() {
+        let digest = new().update("data").digest();
+
+        assert_eq!(new().update("data").verify(digest), true);
+        assert_eq!(new().update(b"data").verify(digest), true);
+        assert_eq!(new().verify(digest), false);
+
+        assert_eq!(new().update("data").finalize().verify(digest), true);
+        assert_eq!(new().update(b"data").finalize().verify(digest), true);
+        assert_eq!(new().finalize().verify(digest), false);
+    }
+
+    #[test]
     fn test_hello_world() {
         let digest = new().update("Hello World").digest();
         assert_eq!(digest.to_hex_lowercase(), "b10a8db164e0754105b7a99be72e3fe5");
