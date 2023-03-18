@@ -1,0 +1,57 @@
+[package]
+name = "chksum-hash-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+
+[dependencies.chksum-hash]
+path = ".."
+
+# Prevent this from interfering with workspaces
+[workspace]
+members = ["."]
+
+[profile.release]
+debug = 1
+
+[[bin]]
+name = "md5"
+path = "fuzz_targets/md5.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "sha1"
+path = "fuzz_targets/sha1.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "sha2-224"
+path = "fuzz_targets/sha2/sha224.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "sha2-256"
+path = "fuzz_targets/sha2/sha256.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "sha2-384"
+path = "fuzz_targets/sha2/sha384.rs"
+test = false
+doc = false
+
+[[bin]]
+name = "sha2-512"
+path = "fuzz_targets/sha2/sha512.rs"
+test = false
+doc = false
