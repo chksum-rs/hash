@@ -1,0 +1,3 @@
+# environment variables:
+# command line:
+'/home/kgolawski/.local/share/afl.rs/rustc-1.68.0-nightly-8a97b48/afl.rs-0.12.16/afl/bin/afl-fuzz' '-i' 'input/' '-o' 'output/' 'target/debug/chksum-hash-afl'

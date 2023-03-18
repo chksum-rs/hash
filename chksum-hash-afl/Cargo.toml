@@ -1,0 +1,11 @@
+[package]
+name = "chksum-hash-afl"
+version = "0.0.0"
+publish = false
+edition = "2021"
+
+[dependencies]
+afl = "*"
+
+[dependencies.chksum-hash]
+path = ".."
