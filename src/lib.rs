@@ -188,22 +188,16 @@ impl Display for Algorithm {
 }
 
 #[cfg(feature = "md5")]
-#[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
 pub use Algorithm::MD5;
 #[cfg(feature = "sha1")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
 pub use Algorithm::SHA1;
 #[cfg(feature = "sha2-224")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
 pub use Algorithm::SHA2_224;
 #[cfg(feature = "sha2-256")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
 pub use Algorithm::SHA2_256;
 #[cfg(feature = "sha2-384")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
 pub use Algorithm::SHA2_384;
 #[cfg(feature = "sha2-512")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
 pub use Algorithm::SHA2_512;
 
 /// Represents hash digest.
