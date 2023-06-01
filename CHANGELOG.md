@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added `Default` trait to `State` and `Update` structs.
+- Added examples (one for each hash function).
 
 ### Removed
 

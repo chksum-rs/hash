@@ -45,3 +45,27 @@ required-features = ["sha1"]
 [[test]]
 name = "sha2"
 required-features = ["sha2"]
+
+[[example]]
+name = "md5"
+required-features = ["md5"]
+
+[[example]]
+name = "sha1"
+required-features = ["sha1"]
+
+[[example]]
+name = "sha2_224"
+required-features = ["sha2-224"]
+
+[[example]]
+name = "sha2_256"
+required-features = ["sha2-256"]
+
+[[example]]
+name = "sha2_384"
+required-features = ["sha2-384"]
+
+[[example]]
+name = "sha2_512"
+required-features = ["sha2-512"]
