@@ -8,18 +8,18 @@
 [![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg?style=flat-square "unsafe forbidden")](https://github.com/rust-secure-code/safety-dance)
 [![LICENSE](https://img.shields.io/github/license/ferric-bytes/chksum-hash?style=flat-square "LICENSE")](https://github.com/ferric-bytes/chksum-hash/blob/master/LICENSE)
 
-Simple cryptography library that provides interface for calculating both batch and stream computation of hash digest.
+A simple cryptography library that provides an interface for calculating hash digests using both batch and stream computation.
 
 ## Features
 
-* Pure Rust,
-* No unsafe code,
-* Configurable via Cargo features,
-* Can be built without any dependencies.
+- Written in pure Rust,
+- No unsafe code
+- Configurable via Cargo features
+- Can be built without any dependencies
 
 ## Setup
 
-Update your `Cargo.toml` by adding entry to `dependencies` section.
+Add the following entry to the `dependencies` section of your `Cargo.toml` file:
 
 ```toml
 [dependencies]
@@ -27,7 +27,7 @@ Update your `Cargo.toml` by adding entry to `dependencies` section.
 chksum-hash = "0.2.2"
 ```
 
-Alternatively use [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand.
+Alternatively, you can use the [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand:
 
 ```sh
 cargo add chksum-hash
@@ -49,7 +49,7 @@ assert_eq!(
 );
 ```
 
-More usage examples are available in the documentation at [docs.rs](https://docs.rs/chksum-hash).
+For more usage examples, refer to the documentation available at [docs.rs](https://docs.rs/chksum-hash).
 
 ## License
 

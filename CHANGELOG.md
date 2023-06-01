@@ -12,6 +12,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `Default` trait to `State` and `Update` structs.
 - Added examples (one for each hash function).
 
+### Changed
+
+- Changed descriptions in `README.md`.
+
 ### Removed
 
 - Removed unnecessary `#[doc]` attributes for `Algorithm` variants.
