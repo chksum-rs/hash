@@ -41,6 +41,20 @@ pub const fn new() -> State {
     State::new()
 }
 
+/// Create default state instance.
+///
+/// # Example
+///
+/// ```rust
+/// use chksum_hash::sha2;
+///
+/// let state = sha2::sha256::state::default();
+/// ```
+#[cfg_attr(all(release, feature = "inline"), inline)]
+pub fn default() -> State {
+    State::default()
+}
+
 /// Low-level struct for manual manipulation of hash state.
 ///
 /// **Warning**: You need to add padding manually.
@@ -603,6 +617,13 @@ impl State {
     }
 }
 
+impl Default for State {
+    #[cfg_attr(all(release, feature = "inline"), inline)]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -610,6 +631,15 @@ mod tests {
     #[test]
     fn test_new() {
         let digest = new().digest();
+        assert_eq!(
+            digest,
+            [0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19]
+        );
+    }
+
+    #[test]
+    fn test_default() {
+        let digest = default().digest();
         assert_eq!(
             digest,
             [0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19]

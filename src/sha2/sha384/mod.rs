@@ -164,6 +164,27 @@ pub fn new() -> Update {
     Update::new()
 }
 
+/// Creates default hash instance.
+///
+/// Check [`Update`] for more details.
+///
+/// # Example
+///
+/// ```rust
+/// use chksum_hash::sha2;
+///
+/// let digest = sha2::sha384::default().update("data").digest();
+/// assert_eq!(
+///     digest.to_hex_lowercase(),
+///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
+/// );
+/// ```
+#[cfg_attr(all(release, feature = "inline"), inline)]
+#[must_use]
+pub fn default() -> Update {
+    Update::default()
+}
+
 /// Computes hash of given input.
 ///
 /// # Example
@@ -384,6 +405,13 @@ impl Update {
     }
 }
 
+impl Default for Update {
+    #[cfg_attr(all(release, feature = "inline"), inline)]
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 /// Represents finalized state.
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct Finalize {
@@ -416,6 +444,16 @@ impl Finalize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn test_default() {
+        let digest = default().digest();
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+        );
+        assert_eq!(verify(b"", digest), true);
+    }
 
     #[test]
     fn test_empty() {
