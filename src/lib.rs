@@ -12,7 +12,7 @@
 //!
 //! Alternatively use [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand.
 //!
-//! ```sh
+//! ```shell
 //! cargo add chksum-hash
 //! ```
 //!

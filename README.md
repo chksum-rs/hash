@@ -12,7 +12,7 @@ A simple cryptography library that provides an interface for calculating hash di
 
 ## Features
 
-- Written in pure Rust,
+- Written in pure Rust
 - No unsafe code
 - Configurable via Cargo features
 - Can be built without any dependencies
@@ -29,7 +29,7 @@ chksum-hash = "0.3.0"
 
 Alternatively, you can use the [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand:
 
-```sh
+```shell
 cargo add chksum-hash
 ```
 
