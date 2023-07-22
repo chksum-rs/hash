@@ -1,4 +1,4 @@
-//! Simple cryptography library that provides interface for calculating both batch and stream computation of hash digest.
+//! A simple cryptography library that provides an interface for calculating hash digests using both batch and stream computation.
 //!
 //! # Setup
 //!
