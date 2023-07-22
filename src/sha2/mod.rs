@@ -2,15 +2,11 @@
 
 #[allow(clippy::module_name_repetitions)]
 #[cfg(feature = "sha2-224")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
 pub mod sha224;
 #[allow(clippy::module_name_repetitions)]
 #[cfg(feature = "sha2-256")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
 pub mod sha256;
 #[cfg(feature = "sha2-384")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
 pub mod sha384;
 #[cfg(feature = "sha2-512")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
 pub mod sha512;

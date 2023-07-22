@@ -57,7 +57,7 @@
 //!
 //! MIT
 
-#![cfg_attr(docsrs, feature(doc_cfg))]
+#![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(nightly, feature(optimize_attribute))]
 #![cfg_attr(nightly, feature(no_coverage))]
 #![forbid(unsafe_code)]
@@ -66,13 +66,10 @@ use std::fmt::{self, Display, Formatter, LowerHex, UpperHex};
 use std::vec::IntoIter;
 
 #[cfg(feature = "error")]
-#[cfg_attr(docsrs, doc(cfg(feature = "error")))]
 mod error;
 #[cfg(feature = "md5")]
-#[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
 pub mod md5;
 #[cfg(feature = "sha1")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
 pub mod sha1;
 #[cfg(any(
     feature = "sha2-224",
@@ -80,15 +77,6 @@ pub mod sha1;
     feature = "sha2-384",
     feature = "sha2-512"
 ))]
-#[cfg_attr(
-    docsrs,
-    doc(cfg(any(
-        feature = "sha2-224",
-        feature = "sha2-256",
-        feature = "sha2-384",
-        feature = "sha2-512"
-    )))
-)]
 pub mod sha2;
 
 #[cfg(feature = "error")]
@@ -100,27 +88,21 @@ pub use error::{Error, Result};
 pub enum Algorithm {
     /// MD5 hash function implemented in [`md5`] module.
     #[cfg(feature = "md5")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
     MD5,
     /// SHA-1 hash function implemented in [`sha1`] module.
     #[cfg(feature = "sha1")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
     SHA1,
     /// SHA-2 224 hash function implemented in [`sha2::sha224`] module.
     #[cfg(feature = "sha2-224")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
     SHA2_224,
     /// SHA-2 256 hash function implemented in [`sha2::sha256`] module.
     #[cfg(feature = "sha2-256")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
     SHA2_256,
     /// SHA-2 384 hash function implemented in [`sha2::sha384`] module.
     #[cfg(feature = "sha2-384")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
     SHA2_384,
     /// SHA-2 512 hash function implemented in [`sha2::sha512`] module.
     #[cfg(feature = "sha2-512")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
     SHA2_512,
 }
 
@@ -208,37 +190,31 @@ pub enum Digest {
     ///
     /// Read more - [`md5::Digest`].
     #[cfg(feature = "md5")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
     MD5(md5::Digest),
     /// Digest of SHA-1 hash function implemented in [`sha1`] module.
     ///
     /// Read more - [`sha1::Digest`].
     #[cfg(feature = "sha1")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
     SHA1(sha1::Digest),
     /// Digest of SHA-2 224 hash function implemented in [`sha2::sha224`] module.
     ///
     /// Read more - [`sha2::sha224::Digest`].
     #[cfg(feature = "sha2-224")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
     SHA2_224(sha2::sha224::Digest),
     /// Digest of SHA-2 256 hash function implemented in [`sha2::sha256`] module.
     ///
     /// Read more - [`sha2::sha256::Digest`].
     #[cfg(feature = "sha2-256")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
     SHA2_256(sha2::sha256::Digest),
     /// Digest of SHA-2 384 hash function implemented in [`sha2::sha384`] module.
     ///
     /// Read more - [`sha2::sha384::Digest`].
     #[cfg(feature = "sha2-384")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
     SHA2_384(sha2::sha384::Digest),
     /// Digest of SHA-2 512 hash function implemented in [`sha2::sha512`] module.
     ///
     /// Read more - [`sha2::sha512::Digest`].
     #[cfg(feature = "sha2-512")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
     SHA2_512(sha2::sha512::Digest),
 }
 
@@ -248,22 +224,16 @@ impl Digest {
     pub const fn as_bytes(&self) -> &[u8] {
         match self {
             #[cfg(feature = "md5")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
             Self::MD5(digest) => digest.as_bytes(),
             #[cfg(feature = "sha1")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
             Self::SHA1(digest) => digest.as_bytes(),
             #[cfg(feature = "sha2-224")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
             Self::SHA2_224(digest) => digest.as_bytes(),
             #[cfg(feature = "sha2-256")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
             Self::SHA2_256(digest) => digest.as_bytes(),
             #[cfg(feature = "sha2-384")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
             Self::SHA2_384(digest) => digest.as_bytes(),
             #[cfg(feature = "sha2-512")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
             Self::SHA2_512(digest) => digest.as_bytes(),
         }
     }
@@ -274,22 +244,16 @@ impl Digest {
     pub fn to_hex_lowercase(&self) -> String {
         match self {
             #[cfg(feature = "md5")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
             Self::MD5(digest) => digest.to_hex_lowercase(),
             #[cfg(feature = "sha1")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
             Self::SHA1(digest) => digest.to_hex_lowercase(),
             #[cfg(feature = "sha2-224")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
             Self::SHA2_224(digest) => digest.to_hex_lowercase(),
             #[cfg(feature = "sha2-256")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
             Self::SHA2_256(digest) => digest.to_hex_lowercase(),
             #[cfg(feature = "sha2-384")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
             Self::SHA2_384(digest) => digest.to_hex_lowercase(),
             #[cfg(feature = "sha2-512")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
             Self::SHA2_512(digest) => digest.to_hex_lowercase(),
         }
     }
@@ -300,22 +264,16 @@ impl Digest {
     pub fn to_hex_uppercase(&self) -> String {
         match self {
             #[cfg(feature = "md5")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
             Self::MD5(digest) => digest.to_hex_uppercase(),
             #[cfg(feature = "sha1")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
             Self::SHA1(digest) => digest.to_hex_uppercase(),
             #[cfg(feature = "sha2-224")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
             Self::SHA2_224(digest) => digest.to_hex_uppercase(),
             #[cfg(feature = "sha2-256")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
             Self::SHA2_256(digest) => digest.to_hex_uppercase(),
             #[cfg(feature = "sha2-384")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
             Self::SHA2_384(digest) => digest.to_hex_uppercase(),
             #[cfg(feature = "sha2-512")]
-            #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
             Self::SHA2_512(digest) => digest.to_hex_uppercase(),
         }
     }
@@ -329,7 +287,6 @@ impl AsRef<[u8]> for Digest {
 }
 
 #[cfg(feature = "md5")]
-#[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
 impl From<md5::Digest> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: md5::Digest) -> Self {
@@ -338,7 +295,6 @@ impl From<md5::Digest> for Digest {
 }
 
 #[cfg(feature = "sha1")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
 impl From<sha1::Digest> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha1::Digest) -> Self {
@@ -347,7 +303,6 @@ impl From<sha1::Digest> for Digest {
 }
 
 #[cfg(feature = "sha2-224")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
 impl From<sha2::sha224::Digest> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha224::Digest) -> Self {
@@ -356,7 +311,6 @@ impl From<sha2::sha224::Digest> for Digest {
 }
 
 #[cfg(feature = "sha2-256")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
 impl From<sha2::sha256::Digest> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha256::Digest) -> Self {
@@ -365,7 +319,6 @@ impl From<sha2::sha256::Digest> for Digest {
 }
 
 #[cfg(feature = "sha2-384")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
 impl From<sha2::sha384::Digest> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha384::Digest) -> Self {
@@ -374,7 +327,6 @@ impl From<sha2::sha384::Digest> for Digest {
 }
 
 #[cfg(feature = "sha2-512")]
-#[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
 impl From<sha2::sha512::Digest> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn from(digest: sha2::sha512::Digest) -> Self {
@@ -459,37 +411,31 @@ pub enum Update {
     ///
     /// Read more - [`md5::Update`].
     #[cfg(feature = "md5")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
     MD5(md5::Update),
     /// In-progress state of SHA-1 hash function implemented in [`sha1`] module.
     ///
     /// Read more - [`sha1::Update`].
     #[cfg(feature = "sha1")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
     SHA1(sha1::Update),
     /// In-progress state of SHA-2 224 hash function implemented in [`sha2::sha224`] module.
     ///
     /// Read more - [`sha2::sha224::Update`].
     #[cfg(feature = "sha2-224")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
     SHA2_224(sha2::sha224::Update),
     /// In-progress state of SHA-2 256 hash function implemented in [`sha2::sha256`] module.
     ///
     /// Read more - [`sha2::sha256::Update`].
     #[cfg(feature = "sha2-256")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
     SHA2_256(sha2::sha256::Update),
     /// In-progress state of SHA-2 384 hash function implemented in [`sha2::sha384`] module.
     ///
     /// Read more - [`sha2::sha384::Update`].
     #[cfg(feature = "sha2-384")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
     SHA2_384(sha2::sha384::Update),
     /// In-progress state of SHA-2 512 hash function implemented in [`sha2::sha512`] module.
     ///
     /// Read more - [`sha2::sha512::Update`].
     #[cfg(feature = "sha2-512")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
     SHA2_512(sha2::sha512::Update),
 }
 
@@ -642,37 +588,31 @@ pub enum Finalize {
     ///
     /// Read more - [`md5::Finalize`].
     #[cfg(feature = "md5")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "md5")))]
     MD5(md5::Finalize),
     /// Finalized state of SHA-1 hash function implemented in [`sha1`] module.
     ///
     /// Read more - [`sha1::Finalize`].
     #[cfg(feature = "sha1")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha1")))]
     SHA1(sha1::Finalize),
     /// Finalized state of SHA-2 224 hash function implemented in [`sha2::sha224`] module.
     ///
     /// Read more - [`sha2::sha224::Finalize`].
     #[cfg(feature = "sha2-224")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-224")))]
     SHA2_224(sha2::sha224::Finalize),
     /// Finalized state of SHA-2 256 hash function implemented in [`sha2::sha256`] module.
     ///
     /// Read more - [`sha2::sha256::Finalize`].
     #[cfg(feature = "sha2-256")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-256")))]
     SHA2_256(sha2::sha256::Finalize),
     /// Finalized state of SHA-2 384 hash function implemented in [`sha2::sha384`] module.
     ///
     /// Read more - [`sha2::sha384::Finalize`].
     #[cfg(feature = "sha2-384")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-384")))]
     SHA2_384(sha2::sha384::Finalize),
     /// Finalized state of SHA-2 512 hash function implemented in [`sha2::sha512`] module.
     ///
     /// Read more - [`sha2::sha512::Finalize`].
     #[cfg(feature = "sha2-512")]
-    #[cfg_attr(docsrs, doc(cfg(feature = "sha2-512")))]
     SHA2_512(sha2::sha512::Finalize),
 }
 

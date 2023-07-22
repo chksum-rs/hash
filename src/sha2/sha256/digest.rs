@@ -224,7 +224,6 @@ impl UpperHex for Digest {
 }
 
 #[cfg(feature = "error")]
-#[cfg_attr(docsrs, doc(cfg(feature = "error")))]
 impl TryFrom<&str> for Digest {
     type Error = Error;
 
