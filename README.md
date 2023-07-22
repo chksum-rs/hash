@@ -36,9 +36,9 @@ cargo add chksum-hash
 ## Usage
 
 ```rust
-use chksum_hash as hash;
+use chksum_hash::sha2;
 
-let digest = hash::new(hash::SHA2_256)
+let digest = sha2::sha256::new()
     .update("some")
     .update(b"data")
     .update([0, 1, 2, 3])

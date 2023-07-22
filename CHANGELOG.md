@@ -18,6 +18,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed `doc_cfg` feature with `doc_auto_cfg`.
 - Changed conditional attribute `#[doc(hidden)]` to be conditionless.
 
+### Removed
+
+- Removed enums at top level of the crate.
+
 ## [0.3.0] - 2023-06-01
 
 ### Added
