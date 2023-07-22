@@ -138,11 +138,11 @@
 
 use std::slice::ChunksExact;
 
-#[cfg_attr(docsrs, doc(hidden))] // TODO: Add documentation to this module
+#[doc(hidden)] // TODO: Add documentation to this module
 pub mod block;
-#[cfg_attr(docsrs, doc(hidden))] // TODO: Add documentation to this module
+#[doc(hidden)] // TODO: Add documentation to this module
 pub mod digest;
-#[cfg_attr(docsrs, doc(hidden))] // TODO: Add documentation to this module
+#[doc(hidden)] // TODO: Add documentation to this module
 pub mod state;
 
 use block::Block;
