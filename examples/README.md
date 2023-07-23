@@ -16,4 +16,4 @@ LICENSE 2d05dddbdc86b064e0b130ba403194125cb59ce80500e33d9018cbe4
 
 ## Limitations
 
-You cannot pass paths to directories, nor can you calculate a digest from stdin.
+You cannot pass paths to directories nor you cannot calculate a digest from stdin.
