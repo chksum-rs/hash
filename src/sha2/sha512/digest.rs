@@ -129,6 +129,8 @@ impl Digest {
     }
 }
 
+impl crate::Digest for Digest {}
+
 impl AsRef<[u8]> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn as_ref(&self) -> &[u8] {

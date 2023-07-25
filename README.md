@@ -35,10 +35,24 @@ cargo add chksum-hash
 
 ## Usage
 
-```rust
-use chksum_hash::sha2;
+Use `hash` function for batch digest calculation.
 
-let digest = sha2::sha256::new()
+```rust
+use chksum_hash::{hash, SHA2_224};
+
+let digest = hash::<SHA2_224, _>(b"somedata");
+assert_eq!(
+    digest.to_hex_lowercase(),
+    "a39b86d838273f5ff4879c26f85e3cb333bb44d73b24f275bad1a6c6"
+);
+```
+
+Use `default` function to create hash instance for stream digest calculation.
+
+```rust
+use chksum_hash::{default, SHA2_256};
+
+let digest = default::<SHA2_256>()
     .update("some")
     .update(b"data")
     .update([0, 1, 2, 3])

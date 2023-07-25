@@ -380,6 +380,29 @@ impl Update {
     }
 }
 
+impl crate::Update for Update {
+    type Digest = Digest;
+    type Finalize = Finalize;
+
+    #[cfg_attr(all(release, feature = "inline"), inline)]
+    fn update<T>(self, data: T) -> Self
+    where
+        T: AsRef<[u8]>,
+    {
+        self.update(data)
+    }
+
+    #[cfg_attr(all(release, feature = "inline"), inline)]
+    fn finalize(&self) -> Self::Finalize {
+        self.finalize()
+    }
+
+    #[cfg_attr(all(release, feature = "inline"), inline)]
+    fn reset(self) -> Self {
+        self.reset()
+    }
+}
+
 impl Default for Update {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     fn default() -> Self {
@@ -406,6 +429,21 @@ impl Finalize {
     #[must_use]
     pub fn reset(&self) -> Update {
         Update::new()
+    }
+}
+
+impl crate::Finalize for Finalize {
+    type Digest = Digest;
+    type Update = Update;
+
+    #[cfg_attr(all(release, feature = "inline"), inline)]
+    fn digest(&self) -> Self::Digest {
+        self.digest()
+    }
+
+    #[cfg_attr(all(release, feature = "inline"), inline)]
+    fn reset(&self) -> Self::Update {
+        self.reset()
     }
 }
 
