@@ -183,6 +183,30 @@ pub mod sha1;
     feature = "sha2-512"
 ))]
 pub mod sha2;
+#[cfg(feature = "sha2-224")]
+pub mod sha2_224 {
+    //! Module alias for [`sha2::sha224`](crate::sha2::sha224).
+
+    pub use super::sha2::sha224::*;
+}
+#[cfg(feature = "sha2-256")]
+pub mod sha2_256 {
+    //! Module alias for [`sha2::sha256`](crate::sha2::sha256).
+
+    pub use super::sha2::sha256::*;
+}
+#[cfg(feature = "sha2-384")]
+pub mod sha2_384 {
+    //! Module alias for [`sha2::sha384`](crate::sha2::sha384).
+
+    pub use super::sha2::sha384::*;
+}
+#[cfg(feature = "sha2-512")]
+pub mod sha2_512 {
+    //! Module alias for [`sha2::sha512`](crate::sha2::sha512).
+
+    pub use super::sha2::sha512::*;
+}
 
 #[cfg(feature = "error")]
 pub use error::{Error, Result};
@@ -440,6 +464,34 @@ pub type SHA2_384 = sha2::sha384::Update;
 /// );
 #[cfg(feature = "sha2-512")]
 pub type SHA2_512 = sha2::sha512::Update;
+
+/// Module aggregator for SHA-2 family hash functions.
+#[allow(non_snake_case)]
+#[cfg(any(
+    feature = "sha2-224",
+    feature = "sha2-256",
+    feature = "sha2-384",
+    feature = "sha2-512"
+))]
+pub mod SHA2 {
+    use super::sha2;
+
+    /// [`sha2::sha224::Update`] type alias.
+    #[cfg(feature = "sha2-224")]
+    pub type SHA224 = sha2::sha224::Update;
+
+    /// [`sha2::sha256::Update`] type alias.
+    #[cfg(feature = "sha2-256")]
+    pub type SHA256 = sha2::sha256::Update;
+
+    /// [`sha2::sha384::Update`] type alias.
+    #[cfg(feature = "sha2-384")]
+    pub type SHA384 = sha2::sha384::Update;
+
+    /// [`sha2::sha512::Update`] type alias.
+    #[cfg(feature = "sha2-512")]
+    pub type SHA512 = sha2::sha512::Update;
+}
 
 #[cfg(test)]
 mod tests {

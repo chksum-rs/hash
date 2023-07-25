@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added algorithms description in docs.
 - Added `Digest`, `Update` and `Finalize` traits.
+- Added modules aliases and module aggregator for SHA-2 family.
 
 ## Fixed
 
