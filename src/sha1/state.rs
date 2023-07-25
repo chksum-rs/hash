@@ -21,6 +21,7 @@ const E: u32 = 0xC3D2E1F0;
 /// let state = sha1::state::new();
 /// ```
 #[cfg_attr(all(release, feature = "inline"), inline)]
+#[must_use]
 pub const fn new() -> State {
     State::new()
 }
@@ -75,7 +76,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
 /// ];
-/// state.update(data);
+/// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
 ///     [0xDA39A3EE, 0x5E6B4B0D, 0x3255BFEF, 0x95601890, 0xAFD80709]
@@ -111,7 +112,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
 /// ];
-/// state.update(data);
+/// state = state.update(data);
 /// let data = [
 ///     u32::from_be_bytes([0x35, 0x36, 0x37, 0x38]),
 ///     # u32::from_be_bytes([0x39, 0x30, 0x31, 0x32]),
@@ -132,7 +133,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x00, 0x00, 0x02, 0x80]),
 /// ];
-/// state.update(data);
+/// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
 ///     [0x50ABF570, 0x6A150990, 0xA08B2C5E, 0xA40FA0E5, 0x85554732]
@@ -155,26 +156,26 @@ impl State {
     /// ```rust
     /// use chksum_hash::sha1;
     ///
-    /// let mut state = sha1::state::new();
+    /// let state = sha1::state::new();
     /// assert_eq!(
     ///     state.digest(),
     ///     [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
     /// );
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    // #[must_use]
+    #[must_use]
     pub const fn digest(&self) -> [u32; 5] {
         [self.a, self.b, self.c, self.d, self.e]
     }
 
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    // #[must_use]
+    #[must_use]
     const fn from_raw(a: u32, b: u32, c: u32, d: u32, e: u32) -> Self {
         Self { a, b, c, d, e }
     }
 
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    // #[must_use]
+    #[must_use]
     const fn new() -> Self {
         Self::from_raw(A, B, C, D, E)
     }
@@ -188,10 +189,15 @@ impl State {
     ///
     /// let mut state = sha1::state::new();
     /// let data = [0x00; 16];
-    /// state.update(data);
+    /// state = state.update(data);
+    /// assert_eq!(
+    ///     state.digest(),
+    ///     [0x92B404E5, 0x56588CED, 0x6C1ACD4E, 0xBF053F68, 0x09F73A93]
+    /// );
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
-    pub fn update(&mut self, block: [u32; block::LENGTH_DWORDS]) -> &mut Self {
+    #[must_use]
+    pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
         #[rustfmt::skip]
         let mut block = [
             block[0x0], block[0x1], block[0x2], block[0x3],
@@ -280,7 +286,7 @@ impl State {
         block[0x4E] = (block[0x4B] ^ block[0x46] ^ block[0x40] ^ block[0x3E]).rotate_left(1);
         block[0x4F] = (block[0x4C] ^ block[0x47] ^ block[0x41] ^ block[0x3F]).rotate_left(1);
 
-        let (a, b, c, d, e) = (self.a, self.b, self.c, self.d, self.e);
+        let Self { a, b, c, d, e } = *self;
 
         // Step 1
 
@@ -436,13 +442,15 @@ impl State {
 
         // Update state
 
-        self.a = self.a.wrapping_add(a);
-        self.b = self.b.wrapping_add(b);
-        self.c = self.c.wrapping_add(c);
-        self.d = self.d.wrapping_add(d);
-        self.e = self.e.wrapping_add(e);
+        let a = a.wrapping_add(self.a);
+        let b = b.wrapping_add(self.b);
+        let c = c.wrapping_add(self.c);
+        let d = d.wrapping_add(self.d);
+        let e = e.wrapping_add(self.e);
 
-        self
+        // Return new state
+
+        Self::from_raw(a, b, c, d, e)
     }
 
     /// Reset state to default values.
@@ -454,7 +462,8 @@ impl State {
     ///
     /// let mut state = sha1::state::new();
     /// let data = [0x00; 16];
-    /// let digest = state.update(data).digest();
+    /// state = state.update(data);
+    /// let digest = state.digest();
     /// assert_ne!(
     ///     digest,
     ///     [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]
@@ -466,13 +475,9 @@ impl State {
     /// );
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    pub fn reset(&mut self) -> &mut Self {
-        self.a = A;
-        self.b = B;
-        self.c = C;
-        self.d = D;
-        self.e = E;
-        self
+    #[must_use]
+    pub const fn reset(self) -> Self {
+        Self::from_raw(A, B, C, D, E)
     }
 }
 

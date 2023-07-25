@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed build script to meet rustfmt styles guidelines.
 - Changed usage examples in docs.
 - Changed functions and methods to use destructive pattern.
+- Changed `State` and `Update` structs to take ownership instead of reference.
 
 ### Removed
 

@@ -37,6 +37,7 @@ const SHIFTS: [u32; 16] = [
 /// let state = md5::state::new();
 /// ```
 #[cfg_attr(all(release, feature = "inline"), inline)]
+#[must_use]
 pub const fn new() -> State {
     State::new()
 }
@@ -91,7 +92,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_le_bytes([0x00, 0x00, 0x00, 0x00]),
 /// ];
-/// state.update(data);
+/// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
 ///     [0xD98C1DD4, 0x04B2008F, 0x980980E9, 0x7E42F8EC]
@@ -127,7 +128,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_le_bytes([0x31, 0x32, 0x33, 0x34]),
 /// ];
-/// state.update(data);
+/// state = state.update(data);
 /// let data = [
 ///     u32::from_le_bytes([0x35, 0x36, 0x37, 0x38]),
 ///     # u32::from_le_bytes([0x39, 0x30, 0x31, 0x32]),
@@ -148,7 +149,7 @@ pub fn default() -> State {
 ///     u32::from_le_bytes([0x80, 0x02, 0x00, 0x00]),
 ///     u32::from_le_bytes([0x00, 0x00, 0x00, 0x00]),
 /// ];
-/// state.update(data);
+/// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
 ///     [0xA2F4ED57, 0x55C9E32B, 0x2EDA49AC, 0x7AB60721]
@@ -170,24 +171,27 @@ impl State {
     /// ```rust
     /// use chksum_hash::md5;
     ///
-    /// let mut state = md5::state::new();
+    /// let state = md5::state::new();
     /// assert_eq!(
     ///     state.digest(),
     ///     [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476]
     /// );
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[must_use]
     pub const fn digest(&self) -> [u32; 4] {
         let Self { a, b, c, d } = *self;
         [a, b, c, d]
     }
 
     #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[must_use]
     const fn from_raw(a: u32, b: u32, c: u32, d: u32) -> Self {
         Self { a, b, c, d }
     }
 
     #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[must_use]
     const fn new() -> Self {
         Self::from_raw(A, B, C, D)
     }
@@ -201,11 +205,16 @@ impl State {
     ///
     /// let mut state = md5::state::new();
     /// let data = [0x00; 16];
-    /// state.update(data);
+    /// state = state.update(data);
+    /// assert_eq!(
+    ///     state.digest(),
+    ///     [0x031F1DAC, 0x6EA58ED0, 0x1FAB67B7, 0x74317791]
+    /// );
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
-    pub fn update(&mut self, block: [u32; block::LENGTH_DWORDS]) -> &mut Self {
-        let (a, b, c, d) = (self.a, self.b, self.c, self.d);
+    #[must_use]
+    pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
+        let Self { a, b, c, d } = *self;
 
         // Round 1
 
@@ -341,12 +350,14 @@ impl State {
 
         // Update state
 
-        self.a = self.a.wrapping_add(a);
-        self.b = self.b.wrapping_add(b);
-        self.c = self.c.wrapping_add(c);
-        self.d = self.d.wrapping_add(d);
+        let a = a.wrapping_add(self.a);
+        let b = b.wrapping_add(self.b);
+        let c = c.wrapping_add(self.c);
+        let d = d.wrapping_add(self.d);
 
-        self
+        // Return new state
+
+        Self::from_raw(a, b, c, d)
     }
 
     /// Reset state to default values.
@@ -358,18 +369,16 @@ impl State {
     ///
     /// let mut state = md5::state::new();
     /// let data = [0x00; 16];
-    /// let digest = state.update(data).digest();
+    /// state = state.update(data);
+    /// let digest = state.digest();
     /// assert_ne!(digest, [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476]);
     /// let digest = state.reset().digest();
     /// assert_eq!(digest, [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476]);
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    pub fn reset(&mut self) -> &mut Self {
-        self.a = A;
-        self.b = B;
-        self.c = C;
-        self.d = D;
-        self
+    #[must_use]
+    pub const fn reset(self) -> Self {
+        Self::from_raw(A, B, C, D)
     }
 }
 

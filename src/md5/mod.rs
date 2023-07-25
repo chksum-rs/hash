@@ -19,6 +19,7 @@
 //! Digest of data streams can be calculated chunk-by-chunk with consumer created by calling [`new`] function.
 //!
 //! ```rust
+//! // Import all necessary items
 //! # use std::io;
 //! # use std::path::PathBuf;
 //! use std::fs::File;
@@ -27,17 +28,27 @@
 //! use chksum_hash::md5;
 //!
 //! # fn wrapper(path: PathBuf) -> io::Result<()> {
+//! // Create hash instance
+//! let mut hash = md5::new();
+//!
+//! // Open file and create buffer for incoming data
 //! let mut file = File::open(path)?;
 //! let mut buffer = vec![0; 64];
-//! let mut hash = md5::new();
+//!
+//! // Iterate chunk by chunk
 //! while let Ok(count) = file.read(&mut buffer) {
+//!     // EOF reached, exit loop
 //!     if count == 0 {
 //!         break;
 //!     }
 //!
-//!     hash.update(&buffer[..count]);
+//!     // Update hash with data
+//!     hash = hash.update(&buffer[..count]);
 //! }
+//!
+//! // Calculate digest
 //! let digest = hash.digest();
+//! // Cast digest to hex and compare
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "1e50210a0202497fb79bc38b6ade6c34"
@@ -46,7 +57,7 @@
 //! # }
 //! ```
 //!
-//! Check [`Update`] structure for more examples.
+//! Check [`Update`] and [`Finalize`] structures for more examples.
 //!
 //! ## Internal buffering
 //!
@@ -74,12 +85,13 @@
 //! );
 //! ```
 //!
-//! Since [`Digest`] implements `AsRef<[u8]>` then digests can chained to implement hash digest of hash digest.
+//! Since [`Digest`] implements `AsRef<[u8]>` then digests can be chained to implement hash digest of hash digest.
 //!
 //! ```rust
 //! use chksum_hash::md5;
 //!
-//! let digest = md5::hash(md5::hash(b"some data"));
+//! let digest = md5::hash(b"some data");
+//! let digest = md5::hash(digest);
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "b31d1994ce08cf84ec51f572afc8dafb"
@@ -91,8 +103,6 @@
 //! MD5 hash function should be used only for backward compability due to security issues.
 //!
 //! Check [RFC 6151: Updated Security Considerations for the MD5 Message-Digest and the HMAC-MD5 Algorithms](https://www.rfc-editor.org/rfc/rfc6151) for more details.
-
-use std::slice::ChunksExact;
 
 #[doc(hidden)] // TODO: Add documentation to this module
 pub mod block;
@@ -191,17 +201,6 @@ impl Update {
         }
     }
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
-    #[must_use]
-    fn update_chunks<'a>(&mut self, mut chunks: ChunksExact<'a, u8>) -> &'a [u8] {
-        for chunk in chunks.by_ref() {
-            let block = Block::try_from(chunk).expect("chunk length should be exact size as block");
-            self.state.update(block.into());
-            self.processed = self.processed.wrapping_add(block::LENGTH_BYTES);
-        }
-        chunks.remainder()
-    }
-
     /// Produces final digest.
     #[cfg_attr(all(release, feature = "inline"), inline)]
     #[must_use]
@@ -213,35 +212,39 @@ impl Update {
     #[cfg_attr(nightly, optimize(speed))]
     #[must_use]
     pub fn finalize(&self) -> Finalize {
+        let Self {
+            mut state,
+            unprocessed,
+            processed,
+        } = self;
+
         assert!(
-            self.unprocessed.len() < block::LENGTH_BYTES,
+            unprocessed.len() < block::LENGTH_BYTES,
             "unprocessed data length should be less than block length"
         );
 
         let length = {
-            let length = (self.unprocessed.len() + self.processed) as u64;
+            let length = (unprocessed.len() + processed) as u64;
             let length = length * 8; // convert byte-length into bits-length
             length.to_le_bytes()
         };
 
-        let mut state = self.state;
-
-        if (self.unprocessed.len() + 1 + length.len()) <= block::LENGTH_BYTES {
+        if (unprocessed.len() + 1 + length.len()) <= block::LENGTH_BYTES {
             let padding = {
                 let mut padding = [0u8; block::LENGTH_BYTES];
-                padding[..self.unprocessed.len()].copy_from_slice(&self.unprocessed[..self.unprocessed.len()]);
-                padding[self.unprocessed.len()] = 0x80;
+                padding[..unprocessed.len()].copy_from_slice(&unprocessed[..unprocessed.len()]);
+                padding[unprocessed.len()] = 0x80;
                 padding[(block::LENGTH_BYTES - length.len())..].copy_from_slice(&length);
                 padding
             };
 
             let block = Block::try_from(&padding[..]).expect("padding length should exact size as block");
-            state.update(block.into());
+            state = state.update(block.into());
         } else {
             let padding = {
                 let mut padding = [0u8; block::LENGTH_BYTES * 2];
-                padding[..self.unprocessed.len()].copy_from_slice(&self.unprocessed[..self.unprocessed.len()]);
-                padding[self.unprocessed.len()] = 0x80;
+                padding[..unprocessed.len()].copy_from_slice(&unprocessed[..unprocessed.len()]);
+                padding[unprocessed.len()] = 0x80;
                 padding[(block::LENGTH_BYTES * 2 - length.len())..].copy_from_slice(&length);
                 padding
             };
@@ -249,13 +252,14 @@ impl Update {
             let block = {
                 Block::try_from(&padding[..block::LENGTH_BYTES]).expect("padding length should exact size as block")
             };
-            state.update(block.into());
+            state = state.update(block.into());
 
             let block = {
                 Block::try_from(&padding[block::LENGTH_BYTES..]).expect("padding length should exact size as block")
             };
-            state.update(block.into());
+            state = state.update(block.into());
         }
+
         Finalize { state }
     }
 
@@ -267,48 +271,75 @@ impl Update {
     ///
     /// In any other case internal buffer is used which can cause speed down the performance.
     #[cfg_attr(nightly, optimize(speed))]
-    pub fn update<T>(&mut self, data: T) -> &mut Self
+    #[must_use]
+    pub fn update<T>(self, data: T) -> Self
     where
         T: AsRef<[u8]>,
     {
+        let Self {
+            mut state,
+            mut unprocessed,
+            mut processed,
+        } = self;
         let data = data.as_ref();
-        if self.unprocessed.is_empty() {
+
+        if unprocessed.is_empty() {
             // internal buffer is empty
             // incoming data can be processed without buffering
-            let chunks = data.chunks_exact(block::LENGTH_BYTES);
-            let remainder = self.update_chunks(chunks);
-            if !remainder.is_empty() {
-                self.unprocessed.extend(remainder);
+            let mut chunks = data.chunks_exact(block::LENGTH_BYTES);
+            for chunk in chunks.by_ref() {
+                let block = Block::try_from(chunk).expect("chunk length should be exact size as block");
+                state = state.update(block.into());
+                processed = processed.wrapping_add(block::LENGTH_BYTES);
             }
-        } else if (self.unprocessed.len() + data.len()) < block::LENGTH_BYTES {
+            let remainder = chunks.remainder();
+            if !remainder.is_empty() {
+                unprocessed.extend(remainder);
+            }
+        } else if (unprocessed.len() + data.len()) < block::LENGTH_BYTES {
             // no enough data even for one block
-            self.unprocessed.extend(data);
+            unprocessed.extend(data);
         } else {
             // create first block from buffer
             // create second (and every other) block from incoming data
             assert!(
-                self.unprocessed.len() < block::LENGTH_BYTES,
+                unprocessed.len() < block::LENGTH_BYTES,
                 "unprocessed should contain less data than one block"
             );
-            let missing = block::LENGTH_BYTES - self.unprocessed.len();
+            let missing = block::LENGTH_BYTES - unprocessed.len();
             assert!(missing <= data.len(), ""); // todo add message
             let (fillment, data) = data.split_at(missing);
             let block = {
                 let mut block = [0u8; block::LENGTH_BYTES];
-                let (first_part, second_part) = block.split_at_mut(self.unprocessed.len());
-                first_part.copy_from_slice(self.unprocessed.drain(..self.unprocessed.len()).as_slice());
+                let (first_part, second_part) = block.split_at_mut(unprocessed.len());
+                first_part.copy_from_slice(unprocessed.drain(..unprocessed.len()).as_slice());
                 second_part[..missing].copy_from_slice(fillment);
                 block
             };
-            let chunks = block.chunks_exact(block::LENGTH_BYTES);
-            let remainder = self.update_chunks(chunks);
+            let mut chunks = block.chunks_exact(block::LENGTH_BYTES);
+            for chunk in chunks.by_ref() {
+                let block = Block::try_from(chunk).expect("chunk length should be exact size as block");
+                state = state.update(block.into());
+                processed = processed.wrapping_add(block::LENGTH_BYTES);
+            }
+            let remainder = chunks.remainder();
             assert!(remainder.is_empty(), "chunks remainder should be empty");
 
-            let chunks = data.chunks_exact(block::LENGTH_BYTES);
-            let remainder = self.update_chunks(chunks);
-            self.unprocessed.extend(remainder);
+            let mut chunks = data.chunks_exact(block::LENGTH_BYTES);
+            for chunk in chunks.by_ref() {
+                let block = Block::try_from(chunk).expect("chunk length should be exact size as block");
+                state = state.update(block.into());
+                processed = processed.wrapping_add(block::LENGTH_BYTES);
+            }
+            let remainder = chunks.remainder();
+            unprocessed.extend(remainder);
         }
-        self
+
+        Self {
+            state,
+            unprocessed,
+            processed,
+        }
     }
 
     /// Resets state to default without any new memory allocations.
@@ -332,11 +363,20 @@ impl Update {
     /// );
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    pub fn reset(&mut self) -> &mut Self {
-        self.state.reset();
-        self.unprocessed.clear();
-        self.processed = 0;
-        self
+    #[must_use]
+    pub fn reset(self) -> Self {
+        let (state, unprocessed, processed) = {
+            let Self {
+                state, mut unprocessed, ..
+            } = self;
+            unprocessed.clear();
+            (state.reset(), unprocessed, 0)
+        };
+        Self {
+            state,
+            unprocessed,
+            processed,
+        }
     }
 }
 
@@ -380,7 +420,7 @@ mod tests {
     }
 
     #[test]
-    fn test_empty() {
+    fn test_new() {
         let digest = new().digest();
         assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
     }

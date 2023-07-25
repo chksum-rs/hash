@@ -17,7 +17,6 @@ pub const LENGTH_HEX: usize = LENGTH_BYTES * 2;
 /// ```rust
 /// use chksum_hash::sha2::sha256::Digest;
 ///
-/// #[rustfmt::skip]
 /// let digest = Digest::new([
 ///     0xE3, 0xB0, 0xC4, 0x42,
 ///     0x98, 0xFC, 0x1C, 0x14,
@@ -57,7 +56,6 @@ impl Digest {
     /// ```rust
     /// use chksum_hash::sha2::sha256::Digest;
     ///
-    /// #[rustfmt::skip]
     /// let digest = Digest::new([
     ///     0xE3, 0xB0, 0xC4, 0x42,
     ///     0x98, 0xFC, 0x1C, 0x14,
@@ -84,7 +82,6 @@ impl Digest {
     /// ```rust
     /// use chksum_hash::sha2::sha256::Digest;
     ///
-    /// #[rustfmt::skip]
     /// let digest = Digest::new([
     ///     0xE3, 0xB0, 0xC4, 0x42,
     ///     0x98, 0xFC, 0x1C, 0x14,

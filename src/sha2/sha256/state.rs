@@ -37,6 +37,7 @@ const K: [u32; 64] = [
 /// let state = sha2::sha256::state::new();
 /// ```
 #[cfg_attr(all(release, feature = "inline"), inline)]
+#[must_use]
 pub const fn new() -> State {
     State::new()
 }
@@ -51,6 +52,7 @@ pub const fn new() -> State {
 /// let state = sha2::sha256::state::default();
 /// ```
 #[cfg_attr(all(release, feature = "inline"), inline)]
+#[must_use]
 pub fn default() -> State {
     State::default()
 }
@@ -67,7 +69,6 @@ pub fn default() -> State {
 /// use chksum_hash::sha2;
 ///
 /// let mut state = sha2::sha256::state::new();
-/// #[rustfmt::skip]
 /// assert_eq!(
 ///     state.digest(),
 ///     [
@@ -94,8 +95,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
 /// ];
-/// state.update(data);
-/// #[rustfmt::skip]
+/// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
 ///     [
@@ -111,7 +111,6 @@ pub fn default() -> State {
 /// use chksum_hash::sha2;
 ///
 /// let mut state = sha2::sha256::state::new();
-/// #[rustfmt::skip]
 /// assert_eq!(
 ///     state.digest(),
 ///     [
@@ -138,7 +137,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
 /// ];
-/// state.update(data);
+/// state = state.update(data);
 /// let data = [
 ///     u32::from_be_bytes([0x35, 0x36, 0x37, 0x38]),
 ///     # u32::from_be_bytes([0x39, 0x30, 0x31, 0x32]),
@@ -159,8 +158,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x00, 0x00, 0x02, 0x80]),
 /// ];
-/// state.update(data);
-/// #[rustfmt::skip]
+/// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
 ///     [
@@ -189,8 +187,7 @@ impl State {
     /// ```rust
     /// use chksum_hash::sha2;
     ///
-    /// let mut state = sha2::sha256::state::new();
-    /// #[rustfmt::skip]
+    /// let state = sha2::sha256::state::new();
     /// assert_eq!(
     ///     state.digest(),
     ///     [
@@ -200,12 +197,14 @@ impl State {
     /// );
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[must_use]
     pub const fn digest(&self) -> [u32; LENGTH_DWORDS] {
         [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h]
     }
 
     #[allow(clippy::too_many_arguments)]
     #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[must_use]
     const fn from_raw(a: u32, b: u32, c: u32, d: u32, e: u32, f: u32, g: u32, h: u32) -> Self {
         Self { a, b, c, d, e, f, g, h }
     }
@@ -220,6 +219,7 @@ impl State {
     /// let state = sha2::sha256::state::new();
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[must_use]
     const fn new() -> Self {
         let [a, b, c, d, e, f, g, h] = H;
         Self::from_raw(a, b, c, d, e, f, g, h)
@@ -234,10 +234,18 @@ impl State {
     ///
     /// let mut state = sha2::sha256::state::new();
     /// let data = [0x00; 16];
-    /// state.update(data);
+    /// state = state.update(data);
+    /// assert_ne!(
+    ///     state.digest(),
+    ///     [
+    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
+    ///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+    ///     ]
+    /// );
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
-    pub fn update(&mut self, block: [u32; block::LENGTH_DWORDS]) -> &mut Self {
+    #[must_use]
+    pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
         #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn small_sigma0(x: u32) -> u32 {
             x.rotate_right(7) ^ x.rotate_right(18) ^ (x >> 3)
@@ -460,7 +468,7 @@ impl State {
             .wrapping_add(small_sigma0(w[0x30]))
             .wrapping_add(w[0x2F]);
 
-        let (a, b, c, d, e, f, g, h) = (self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h);
+        let state = *self;
 
         #[cfg_attr(all(release, feature = "inline"), inline)]
         const fn ch(x: u32, y: u32, z: u32) -> u32 {
@@ -485,7 +493,7 @@ impl State {
         #[allow(clippy::too_many_arguments)]
         #[cfg_attr(all(release, feature = "inline"), inline)]
         #[rustfmt::skip]
-        const fn round(a: u32, b: u32, c: u32, d: u32, e: u32, f: u32, g: u32, h: u32, w: u32, k: u32) -> (u32, u32, u32, u32, u32, u32, u32, u32) {
+        const fn round(State { a, b, c, d, e, f, g, h }: State, w: u32, k: u32) -> State {
             let t1 = h
                 .wrapping_add(capital_sigma1(e))
                 .wrapping_add(ch(e, f, g))
@@ -500,86 +508,90 @@ impl State {
             let c = b;
             let b = a;
             let a = t1.wrapping_add(t2);
-            (a, b, c, d, e, f, g, h)
+            State::from_raw(a, b, c, d, e, f, g, h)
         }
 
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x00], K[0x00]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x01], K[0x01]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x02], K[0x02]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x03], K[0x03]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x04], K[0x04]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x05], K[0x05]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x06], K[0x06]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x07], K[0x07]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x08], K[0x08]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x09], K[0x09]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x0A], K[0x0A]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x0B], K[0x0B]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x0C], K[0x0C]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x0D], K[0x0D]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x0E], K[0x0E]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x0F], K[0x0F]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x10], K[0x10]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x11], K[0x11]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x12], K[0x12]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x13], K[0x13]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x14], K[0x14]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x15], K[0x15]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x16], K[0x16]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x17], K[0x17]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x18], K[0x18]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x19], K[0x19]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x1A], K[0x1A]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x1B], K[0x1B]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x1C], K[0x1C]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x1D], K[0x1D]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x1E], K[0x1E]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x1F], K[0x1F]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x20], K[0x20]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x21], K[0x21]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x22], K[0x22]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x23], K[0x23]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x24], K[0x24]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x25], K[0x25]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x26], K[0x26]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x27], K[0x27]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x28], K[0x28]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x29], K[0x29]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x2A], K[0x2A]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x2B], K[0x2B]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x2C], K[0x2C]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x2D], K[0x2D]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x2E], K[0x2E]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x2F], K[0x2F]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x30], K[0x30]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x31], K[0x31]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x32], K[0x32]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x33], K[0x33]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x34], K[0x34]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x35], K[0x35]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x36], K[0x36]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x37], K[0x37]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x38], K[0x38]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x39], K[0x39]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x3A], K[0x3A]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x3B], K[0x3B]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x3C], K[0x3C]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x3D], K[0x3D]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x3E], K[0x3E]);
-        let (a, b, c, d, e, f, g, h) = round(a, b, c, d, e, f, g, h, w[0x3F], K[0x3F]);
+        let state = round(state, w[0x00], K[0x00]);
+        let state = round(state, w[0x01], K[0x01]);
+        let state = round(state, w[0x02], K[0x02]);
+        let state = round(state, w[0x03], K[0x03]);
+        let state = round(state, w[0x04], K[0x04]);
+        let state = round(state, w[0x05], K[0x05]);
+        let state = round(state, w[0x06], K[0x06]);
+        let state = round(state, w[0x07], K[0x07]);
+        let state = round(state, w[0x08], K[0x08]);
+        let state = round(state, w[0x09], K[0x09]);
+        let state = round(state, w[0x0A], K[0x0A]);
+        let state = round(state, w[0x0B], K[0x0B]);
+        let state = round(state, w[0x0C], K[0x0C]);
+        let state = round(state, w[0x0D], K[0x0D]);
+        let state = round(state, w[0x0E], K[0x0E]);
+        let state = round(state, w[0x0F], K[0x0F]);
+        let state = round(state, w[0x10], K[0x10]);
+        let state = round(state, w[0x11], K[0x11]);
+        let state = round(state, w[0x12], K[0x12]);
+        let state = round(state, w[0x13], K[0x13]);
+        let state = round(state, w[0x14], K[0x14]);
+        let state = round(state, w[0x15], K[0x15]);
+        let state = round(state, w[0x16], K[0x16]);
+        let state = round(state, w[0x17], K[0x17]);
+        let state = round(state, w[0x18], K[0x18]);
+        let state = round(state, w[0x19], K[0x19]);
+        let state = round(state, w[0x1A], K[0x1A]);
+        let state = round(state, w[0x1B], K[0x1B]);
+        let state = round(state, w[0x1C], K[0x1C]);
+        let state = round(state, w[0x1D], K[0x1D]);
+        let state = round(state, w[0x1E], K[0x1E]);
+        let state = round(state, w[0x1F], K[0x1F]);
+        let state = round(state, w[0x20], K[0x20]);
+        let state = round(state, w[0x21], K[0x21]);
+        let state = round(state, w[0x22], K[0x22]);
+        let state = round(state, w[0x23], K[0x23]);
+        let state = round(state, w[0x24], K[0x24]);
+        let state = round(state, w[0x25], K[0x25]);
+        let state = round(state, w[0x26], K[0x26]);
+        let state = round(state, w[0x27], K[0x27]);
+        let state = round(state, w[0x28], K[0x28]);
+        let state = round(state, w[0x29], K[0x29]);
+        let state = round(state, w[0x2A], K[0x2A]);
+        let state = round(state, w[0x2B], K[0x2B]);
+        let state = round(state, w[0x2C], K[0x2C]);
+        let state = round(state, w[0x2D], K[0x2D]);
+        let state = round(state, w[0x2E], K[0x2E]);
+        let state = round(state, w[0x2F], K[0x2F]);
+        let state = round(state, w[0x30], K[0x30]);
+        let state = round(state, w[0x31], K[0x31]);
+        let state = round(state, w[0x32], K[0x32]);
+        let state = round(state, w[0x33], K[0x33]);
+        let state = round(state, w[0x34], K[0x34]);
+        let state = round(state, w[0x35], K[0x35]);
+        let state = round(state, w[0x36], K[0x36]);
+        let state = round(state, w[0x37], K[0x37]);
+        let state = round(state, w[0x38], K[0x38]);
+        let state = round(state, w[0x39], K[0x39]);
+        let state = round(state, w[0x3A], K[0x3A]);
+        let state = round(state, w[0x3B], K[0x3B]);
+        let state = round(state, w[0x3C], K[0x3C]);
+        let state = round(state, w[0x3D], K[0x3D]);
+        let state = round(state, w[0x3E], K[0x3E]);
+        let state = round(state, w[0x3F], K[0x3F]);
 
         // Update state
 
-        self.a = self.a.wrapping_add(a);
-        self.b = self.b.wrapping_add(b);
-        self.c = self.c.wrapping_add(c);
-        self.d = self.d.wrapping_add(d);
-        self.e = self.e.wrapping_add(e);
-        self.f = self.f.wrapping_add(f);
-        self.g = self.g.wrapping_add(g);
-        self.h = self.h.wrapping_add(h);
+        let State { a, b, c, d, e, f, g, h } = state;
 
-        self
+        let a = a.wrapping_add(self.a);
+        let b = b.wrapping_add(self.b);
+        let c = c.wrapping_add(self.c);
+        let d = d.wrapping_add(self.d);
+        let e = e.wrapping_add(self.e);
+        let f = f.wrapping_add(self.f);
+        let g = g.wrapping_add(self.g);
+        let h = h.wrapping_add(self.h);
+
+        // Return new state
+
+        Self::from_raw(a, b, c, d, e, f, g, h)
     }
 
     /// Reset state to default values.
@@ -591,19 +603,18 @@ impl State {
     ///
     /// let mut state = sha2::sha256::state::new();
     /// let data = [0x00; 16];
-    /// state.update(data);
-    /// #[rustfmt::skip]
+    /// state = state.update(data);
+    /// let digest = state.digest();
     /// assert_ne!(
-    ///     state.digest(),
+    ///     digest,
     ///     [
     ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
     ///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
     ///     ]
     /// );
-    /// state.reset();
-    /// #[rustfmt::skip]
+    /// let digest = state.reset().digest();
     /// assert_eq!(
-    ///     state.digest(),
+    ///     digest,
     ///     [
     ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
     ///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
@@ -611,9 +622,10 @@ impl State {
     /// );
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    pub fn reset(&mut self) -> &mut Self {
-        [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h] = H;
-        self
+    #[must_use]
+    pub const fn reset(self) -> Self {
+        let [a, b, c, d, e, f, g, h] = H;
+        Self::from_raw(a, b, c, d, e, f, g, h)
     }
 }
 

@@ -24,7 +24,7 @@ fn main() -> io::Result<()> {
                 break;
             }
             // Consume the data
-            hash.update(buffer);
+            hash = hash.update(buffer);
             reader.consume(length);
         }
 
