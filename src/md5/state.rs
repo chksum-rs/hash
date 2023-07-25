@@ -178,7 +178,8 @@ impl State {
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
     pub const fn digest(&self) -> [u32; 4] {
-        [self.a, self.b, self.c, self.d]
+        let Self { a, b, c, d } = *self;
+        [a, b, c, d]
     }
 
     #[cfg_attr(all(release, feature = "inline"), inline)]

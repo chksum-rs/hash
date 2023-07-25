@@ -181,7 +181,10 @@ impl State {
     /// ```
     #[cfg_attr(all(release, feature = "inline"), inline)]
     pub const fn digest(&self) -> [u32; LENGTH_DWORDS] {
-        [self.a, self.b, self.c, self.d, self.e, self.f, self.g]
+        let Self {
+            a, b, c, d, e, f, g, ..
+        } = *self;
+        [a, b, c, d, e, f, g]
     }
 
     #[allow(clippy::too_many_arguments)]

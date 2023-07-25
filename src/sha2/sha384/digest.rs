@@ -137,8 +137,7 @@ impl From<[u8; LENGTH_BYTES]> for Digest {
 impl From<[u64; LENGTH_QWORDS]> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     #[rustfmt::skip]
-    fn from(digest: [u64; LENGTH_QWORDS]) -> Self {
-        let [a, b, c, d, e, f] = digest;
+    fn from([a, b, c, d, e, f]: [u64; LENGTH_QWORDS]) -> Self {
         let [a, b, c, d, e, f] = [
             a.to_be_bytes(),
             b.to_be_bytes(),
@@ -167,15 +166,15 @@ impl From<[u64; LENGTH_QWORDS]> for Digest {
 impl From<State> for Digest {
     #[cfg_attr(all(release, feature = "inline"), inline)]
     #[rustfmt::skip]
-    fn from(State { a, b, c, d, e, f, g: _, h: _ }: State) -> Self {
+    fn from(State { a, b, c, d, e, f, .. }: State) -> Self {
         Self::from([a, b, c, d, e, f])
     }
 }
 
 impl From<Digest> for [u8; LENGTH_BYTES] {
     #[cfg_attr(all(release, feature = "inline"), inline)]
-    fn from(digest: Digest) -> Self {
-        digest.0
+    fn from(Digest(digest): Digest) -> Self {
+        digest
     }
 }
 
@@ -268,15 +267,14 @@ impl TryFrom<&str> for Digest {
             };
             return Err(error);
         }
-        let (a, b, c, d, e, f) = (
+        let digest = [
             u64::from_str_radix(&digest[0x00..0x10], 16)?,
             u64::from_str_radix(&digest[0x10..0x20], 16)?,
             u64::from_str_radix(&digest[0x20..0x30], 16)?,
             u64::from_str_radix(&digest[0x30..0x40], 16)?,
             u64::from_str_radix(&digest[0x40..0x50], 16)?,
             u64::from_str_radix(&digest[0x50..0x60], 16)?,
-        );
-        let digest = [a, b, c, d, e, f];
+        ];
         let digest = Self::from(digest);
         Ok(digest)
     }

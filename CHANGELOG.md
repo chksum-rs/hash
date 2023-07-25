@@ -23,6 +23,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed conditional attribute `#[doc(hidden)]` to be conditionless.
 - Changed build script to meet rustfmt styles guidelines.
 - Changed usage examples in docs.
+- Changed functions and methods to use destructive pattern.
 
 ### Removed
 
