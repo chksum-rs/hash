@@ -72,8 +72,8 @@ pub fn default() -> State {
 /// assert_eq!(
 ///     state.digest(),
 ///     [
-///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
-///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
+///         0x5BE0CD19,
 ///     ]
 /// );
 /// let data = [
@@ -99,8 +99,8 @@ pub fn default() -> State {
 /// assert_eq!(
 ///     state.digest(),
 ///     [
-///         0xE3B0C442, 0x98FC1C14, 0x9AFBF4C8, 0x996FB924,
-///         0x27AE41E4, 0x649B934C, 0xA495991B, 0x7852B855,
+///         0xE3B0C442, 0x98FC1C14, 0x9AFBF4C8, 0x996FB924, 0x27AE41E4, 0x649B934C, 0xA495991B,
+///         0x7852B855,
 ///     ]
 /// );
 /// ```
@@ -114,8 +114,8 @@ pub fn default() -> State {
 /// assert_eq!(
 ///     state.digest(),
 ///     [
-///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
-///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
+///         0x5BE0CD19,
 ///     ]
 /// );
 /// let data = [
@@ -162,8 +162,8 @@ pub fn default() -> State {
 /// assert_eq!(
 ///     state.digest(),
 ///     [
-///         0xF371BC4A, 0x311F2B00, 0x9EEF952D, 0xD83CA80E,
-///         0x2B60026C, 0x8E935592, 0xD0F9C308, 0x453C813E,
+///         0xF371BC4A, 0x311F2B00, 0x9EEF952D, 0xD83CA80E, 0x2B60026C, 0x8E935592, 0xD0F9C308,
+///         0x453C813E,
 ///     ]
 /// );
 /// ```
@@ -191,8 +191,8 @@ impl State {
     /// assert_eq!(
     ///     state.digest(),
     ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
-    ///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
+    ///         0x5BE0CD19,
     ///     ]
     /// );
     /// ```
@@ -238,8 +238,8 @@ impl State {
     /// assert_ne!(
     ///     state.digest(),
     ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
-    ///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
+    ///         0x5BE0CD19,
     ///     ]
     /// );
     /// ```
@@ -608,16 +608,16 @@ impl State {
     /// assert_ne!(
     ///     digest,
     ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
-    ///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
+    ///         0x5BE0CD19,
     ///     ]
     /// );
     /// let digest = state.reset().digest();
     /// assert_eq!(
     ///     digest,
     ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A,
-    ///         0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
+    ///         0x5BE0CD19,
     ///     ]
     /// );
     /// ```

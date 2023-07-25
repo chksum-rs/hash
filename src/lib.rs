@@ -501,98 +501,50 @@ mod tests {
     #[test]
     fn test_md5() {
         let digest = default::<MD5>().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "d41d8cd98f00b204e9800998ecf8427e"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "D41D8CD98F00B204E9800998ECF8427E"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
+        assert_eq!(digest.to_hex_uppercase(), "D41D8CD98F00B204E9800998ECF8427E");
         assert_eq!(format!("{digest:x}"), digest.to_hex_lowercase());
         assert_eq!(format!("{digest:X}"), digest.to_hex_uppercase());
         assert_eq!(hash::<MD5, _>(b""), digest);
 
         let digest = default::<MD5>().update("data").digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "8d777f385d3dfec8815d20f7496026dc"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "8D777F385D3DFEC8815D20F7496026DC"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "8d777f385d3dfec8815d20f7496026dc");
+        assert_eq!(digest.to_hex_uppercase(), "8D777F385D3DFEC8815D20F7496026DC");
         assert_eq!(hash::<MD5, _>(b"data"), digest);
         assert_eq!(default::<MD5>().update("data").finalize().digest(), digest);
 
         let digest = default::<MD5>().update("data").reset().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "d41d8cd98f00b204e9800998ecf8427e"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "D41D8CD98F00B204E9800998ECF8427E"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
+        assert_eq!(digest.to_hex_uppercase(), "D41D8CD98F00B204E9800998ECF8427E");
 
         let digest = default::<MD5>().update("data").finalize().reset().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "d41d8cd98f00b204e9800998ecf8427e"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "D41D8CD98F00B204E9800998ECF8427E"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
+        assert_eq!(digest.to_hex_uppercase(), "D41D8CD98F00B204E9800998ECF8427E");
     }
 
     #[cfg(feature = "sha1")]
     #[test]
     fn test_sha1() {
         let digest = default::<SHA1>().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "da39a3ee5e6b4b0d3255bfef95601890afd80709"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "da39a3ee5e6b4b0d3255bfef95601890afd80709");
+        assert_eq!(digest.to_hex_uppercase(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
         assert_eq!(format!("{digest:x}"), digest.to_hex_lowercase());
         assert_eq!(format!("{digest:X}"), digest.to_hex_uppercase());
         assert_eq!(hash::<SHA1, _>(b""), digest);
 
         let digest = default::<SHA1>().update("data").digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "A17C9AAA61E80A1BF71D0D850AF4E5BAA9800BBD"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
+        assert_eq!(digest.to_hex_uppercase(), "A17C9AAA61E80A1BF71D0D850AF4E5BAA9800BBD");
         assert_eq!(hash::<SHA1, _>(b"data"), digest);
         assert_eq!(default::<SHA1>().update("data").finalize().digest(), digest);
 
         let digest = default::<SHA1>().update("data").reset().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "da39a3ee5e6b4b0d3255bfef95601890afd80709"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "da39a3ee5e6b4b0d3255bfef95601890afd80709");
+        assert_eq!(digest.to_hex_uppercase(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
 
         let digest = default::<SHA1>().update("data").finalize().reset().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "da39a3ee5e6b4b0d3255bfef95601890afd80709"
-        );
-        assert_eq!(
-            digest.to_hex_uppercase(),
-            "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "da39a3ee5e6b4b0d3255bfef95601890afd80709");
+        assert_eq!(digest.to_hex_uppercase(), "DA39A3EE5E6B4B0D3255BFEF95601890AFD80709");
     }
 
     #[cfg(feature = "sha2-224")]
