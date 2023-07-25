@@ -16,7 +16,25 @@
 //! cargo add chksum-hash
 //! ```
 //!
-//! # Usage example
+//! # Usage
+//!
+//! ## Batch processing
+//!
+//! Use `hash` function for batch digest calculation.
+//!
+//! ```rust
+//! use chksum_hash::sha2;
+//!
+//! let digest = sha2::sha224::hash(b"somedata");
+//! assert_eq!(
+//!     digest.to_hex_lowercase(),
+//!     "a39b86d838273f5ff4879c26f85e3cb333bb44d73b24f275bad1a6c6"
+//! );
+//! ```
+//!
+//! ## Stream processing
+//!
+//! Use `new` or `default` function to create hash instance for stream digest calculation.
 //!
 //! ```rust
 //! use chksum_hash::sha2;
