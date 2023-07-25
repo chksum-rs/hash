@@ -50,6 +50,94 @@
 //! );
 //! ```
 //!
+//! # Algorithms
+//!
+//! ## MD5
+//!
+//! ```rust
+//! use chksum_hash::md5;
+//!
+//! let digest = md5::hash(b"data");
+//! assert_eq!(
+//!     digest.to_hex_lowercase(),
+//!     "8d777f385d3dfec8815d20f7496026dc"
+//! );
+//! ```
+//!
+//! Check [`md5`] module for more informations and usage examples.
+//!
+//! ## SHA-1
+//!
+//! ```rust
+//! use chksum_hash::sha1;
+//!
+//! let digest = sha1::hash(b"data");
+//! assert_eq!(
+//!     digest.to_hex_lowercase(),
+//!     "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd"
+//! );
+//! ```
+//!
+//! Check [`sha1`] module for more informations and usage examples.
+//!
+//! ## SHA-2
+//!
+//! ### SHA-2 224
+//!
+//! ```rust
+//! use chksum_hash::sha2;
+//!
+//! let digest = sha2::sha224::hash(b"data");
+//! assert_eq!(
+//!     digest.to_hex_lowercase(),
+//!     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
+//! );
+//! ```
+//!
+//! Check [`sha2::sha224`] module for more informations and usage examples.
+//!
+//! ### SHA-2 256
+//!
+//! ```rust
+//! use chksum_hash::sha2;
+//!
+//! let digest = sha2::sha256::hash(b"data");
+//! assert_eq!(
+//!     digest.to_hex_lowercase(),
+//!     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
+//! );
+//! ```
+//!
+//! Check [`sha2::sha256`] module for more informations and usage examples.
+//!
+//! ### SHA-2 384
+//!
+//! ```rust
+//! use chksum_hash::sha2;
+//!
+//! let digest = sha2::sha384::hash(b"data");
+//! assert_eq!(
+//!     digest.to_hex_lowercase(),
+//!     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
+//! );
+//! ```
+//!
+//! Check [`sha2::sha384`] module for more informations and usage examples.
+//!
+//! ### SHA-2 512
+//!
+//! ```rust
+//! use chksum_hash::sha2;
+//!
+//! let digest = sha2::sha512::hash(b"data");
+//! assert_eq!(
+//!     digest.to_hex_lowercase(),
+//!     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
+//! );
+//! ```
+//!
+//! Check [`sha2::sha512`] module for more informations and usage examples.
+//!
 //! # Feature flags
 //!
 //! ## Algorithms
