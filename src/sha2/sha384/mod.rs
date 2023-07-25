@@ -14,18 +14,6 @@
 //! );
 //! ```
 //!
-//! ## Verification
-//!
-//! Digest of known-size data can be verified with [`verify`] function.
-//!
-//! ```rust
-//! use chksum_hash::sha2;
-//!
-//! let digest = sha2::sha384::hash("some data");
-//! assert_eq!(sha2::sha384::verify("some data", digest), true);
-//! assert_eq!(sha2::sha384::verify("SOME DATA", digest), false);
-//! ```
-//!
 //! # Stream processing
 //!
 //! Digest of data streams can be calculated chunk-by-chunk with consumer created by calling [`new`] function.
@@ -59,38 +47,6 @@
 //! ```
 //!
 //! Check [`Update`] structure for more examples.
-//!
-//! ## Verification
-//!
-//! Digest of data stream can be verified with [`Update::verify`] or [`Finalize::verify`] methods.
-//!
-//! ```rust
-//! # use std::io;
-//! # use std::path::PathBuf;
-//! use std::fs::File;
-//! use std::io::Read;
-//!
-//! use chksum_hash::sha2;
-//!
-//! # fn wrapper(path: PathBuf) -> io::Result<()> {
-//! let digest_lowercase = sha2::sha384::hash("some data");
-//! let digest_uppercase = sha2::sha384::hash("SOME DATA");
-//!
-//! let mut file = File::open(path)?;
-//! let mut buffer = vec![0; 64];
-//! let mut hash = sha2::sha384::new();
-//! while let Ok(count) = file.read(&mut buffer) {
-//!     if count == 0 {
-//!         break;
-//!     }
-//!
-//!     hash.update(&buffer[..count]);
-//! }
-//! assert_eq!(hash.verify(digest_lowercase), true);
-//! assert_eq!(hash.verify(digest_uppercase), false);
-//! # Ok(())
-//! # }
-//! ```
 //!
 //! ## Internal buffering
 //!
@@ -205,26 +161,6 @@ where
     T: AsRef<[u8]>,
 {
     new().update(data).digest()
-}
-
-/// Verifies hash for given input.
-///
-/// # Example
-///
-/// ```rust
-/// use chksum_hash::sha2;
-///
-/// let digest = sha2::sha384::hash("data");
-/// assert_eq!(sha2::sha384::verify("data", digest), true);
-/// assert_eq!(sha2::sha384::verify("DATA", digest), false);
-/// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
-#[must_use]
-pub fn verify<T>(data: T, digest: Digest) -> bool
-where
-    T: AsRef<[u8]>,
-{
-    hash(data) == digest
 }
 
 /// Represents in-progress hash state.
@@ -396,13 +332,6 @@ impl Update {
         self.processed = 0;
         self
     }
-
-    /// Verifies processed data against given digest.
-    #[cfg_attr(all(release, feature = "inline"), inline)]
-    #[must_use]
-    pub fn verify(&self, digest: Digest) -> bool {
-        self.digest() == digest
-    }
 }
 
 impl Default for Update {
@@ -432,13 +361,6 @@ impl Finalize {
     pub fn reset(&self) -> Update {
         Update::new()
     }
-
-    /// Verifies state against given digest.
-    #[cfg_attr(all(release, feature = "inline"), inline)]
-    #[must_use]
-    pub fn verify(&self, digest: Digest) -> bool {
-        self.digest() == digest
-    }
 }
 
 #[cfg(test)]
@@ -452,7 +374,6 @@ mod tests {
             digest.to_hex_lowercase(),
             "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
         );
-        assert_eq!(verify(b"", digest), true);
     }
 
     #[test]
@@ -462,7 +383,6 @@ mod tests {
             digest.to_hex_lowercase(),
             "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
         );
-        assert_eq!(verify(b"", digest), true);
     }
 
     #[test]
@@ -478,19 +398,6 @@ mod tests {
             digest.to_hex_lowercase(),
             "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
         );
-    }
-
-    #[test]
-    fn test_verify() {
-        let digest = new().update("data").digest();
-
-        assert_eq!(new().update("data").verify(digest), true);
-        assert_eq!(new().update(b"data").verify(digest), true);
-        assert_eq!(new().verify(digest), false);
-
-        assert_eq!(new().update("data").finalize().verify(digest), true);
-        assert_eq!(new().update(b"data").finalize().verify(digest), true);
-        assert_eq!(new().finalize().verify(digest), false);
     }
 
     #[test]

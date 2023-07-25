@@ -28,6 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Removed
 
 - Removed enums at top level of the crate.
+- Removed `verify` functions.
 
 ## [0.3.0] - 2023-06-01
 
