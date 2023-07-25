@@ -12,5 +12,5 @@ pub enum Error {
     ParseError(#[from] ParseIntError),
 }
 
-/// Type alias for [`Result`](std::result::Result) with an error type of [`Error`].
+/// [`Result`](std::result::Result) type alias with an error type of [`Error`].
 pub type Result<T> = result::Result<T, Error>;

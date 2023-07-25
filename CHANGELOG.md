@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed typos in `README.md` and crate docs.
 - Fixed typos in limitations section in `examples/README.md`.
+- Fixed doc description for `Result` alias.
 
 ## Changed
 
