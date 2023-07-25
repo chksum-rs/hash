@@ -17,6 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed crate description.
 - Changed `doc_cfg` feature with `doc_auto_cfg`.
 - Changed conditional attribute `#[doc(hidden)]` to be conditionless.
+- Changed build script to meet rustfmt styles guidelines.
 
 ### Removed
 
