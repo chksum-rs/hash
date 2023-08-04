@@ -1,9 +1,9 @@
 # chksum-hash
 
 [![Build](https://img.shields.io/github/actions/workflow/status/ferric-bytes/chksum-hash/rust.yml?branch=master&style=flat-square&logo=github "Build")](https://github.com/ferric-bytes/chksum-hash/actions/workflows/rust.yml)
-[![Coverage](https://img.shields.io/codecov/c/gh/ferric-bytes/chksum-hash?style=flat-square&logo=codecov "Coverage")](https://app.codecov.io/gh/ferric-bytes/chksum-hash)
 [![crates.io](https://img.shields.io/crates/v/chksum-hash?style=flat-square&logo=rust "crates.io")](https://crates.io/crates/chksum-hash)
 [![docs.rs](https://img.shields.io/docsrs/chksum-hash?style=flat-square&logo=docsdotrs "docs.rs")](https://docs.rs/chksum-hash)
+[![Coverage](https://img.shields.io/codecov/c/gh/ferric-bytes/chksum-hash?style=flat-square&logo=codecov "Coverage")](https://app.codecov.io/gh/ferric-bytes/chksum-hash)
 [![MSRV](https://img.shields.io/badge/MSRV-1.59.0-informational?style=flat-square "MSRV")](https://github.com/ferric-bytes/chksum-hash/blob/master/Cargo.toml)
 [![deps.rs](https://deps.rs/crate/chksum-hash/0.4.0/status.svg?style=flat-square "deps.rs")](https://deps.rs/crate/chksum-hash/0.4.0)
 [![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg?style=flat-square "unsafe forbidden")](https://github.com/rust-secure-code/safety-dance)
