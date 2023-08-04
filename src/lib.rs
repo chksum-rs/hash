@@ -183,33 +183,16 @@ pub mod sha1;
     feature = "sha2-512"
 ))]
 pub mod sha2;
-#[cfg(feature = "sha2-224")]
-pub mod sha2_224 {
-    //! Module alias for [`sha2::sha224`](crate::sha2::sha224).
-
-    pub use super::sha2::sha224::*;
-}
-#[cfg(feature = "sha2-256")]
-pub mod sha2_256 {
-    //! Module alias for [`sha2::sha256`](crate::sha2::sha256).
-
-    pub use super::sha2::sha256::*;
-}
-#[cfg(feature = "sha2-384")]
-pub mod sha2_384 {
-    //! Module alias for [`sha2::sha384`](crate::sha2::sha384).
-
-    pub use super::sha2::sha384::*;
-}
-#[cfg(feature = "sha2-512")]
-pub mod sha2_512 {
-    //! Module alias for [`sha2::sha512`](crate::sha2::sha512).
-
-    pub use super::sha2::sha512::*;
-}
-
 #[cfg(feature = "error")]
 pub use error::{Error, Result};
+#[cfg(feature = "sha2-224")]
+pub use sha2::sha224 as sha2_224;
+#[cfg(feature = "sha2-256")]
+pub use sha2::sha256 as sha2_256;
+#[cfg(feature = "sha2-384")]
+pub use sha2::sha384 as sha2_384;
+#[cfg(feature = "sha2-512")]
+pub use sha2::sha512 as sha2_512;
 
 /// Creates default hash instance.
 ///
