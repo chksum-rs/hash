@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## Added
+
+- Added link to GitHub Action in `README.md`.
+
 ## Fixed
 
 - Fixed tests code format to be rustfmt compatible.

@@ -1,6 +1,6 @@
 # chksum-hash
 
-![Build](https://img.shields.io/github/actions/workflow/status/ferric-bytes/chksum-hash/rust.yml?branch=master&style=flat-square&logo=github "Build")
+[![Build](https://img.shields.io/github/actions/workflow/status/ferric-bytes/chksum-hash/rust.yml?branch=master&style=flat-square&logo=github "Build")](https://github.com/ferric-bytes/chksum-hash/actions/workflows/rust.yml)
 [![Coverage](https://img.shields.io/codecov/c/gh/ferric-bytes/chksum-hash?style=flat-square&logo=codecov "Coverage")](https://app.codecov.io/gh/ferric-bytes/chksum-hash)
 [![crates.io](https://img.shields.io/crates/v/chksum-hash?style=flat-square&logo=rust "crates.io")](https://crates.io/crates/chksum-hash)
 [![docs.rs](https://img.shields.io/docsrs/chksum-hash?style=flat-square&logo=docsdotrs "docs.rs")](https://docs.rs/chksum-hash)
