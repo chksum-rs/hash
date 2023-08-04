@@ -457,23 +457,14 @@ pub type SHA2_512 = sha2::sha512::Update;
     feature = "sha2-512"
 ))]
 pub mod SHA2 {
-    use super::sha2;
-
-    /// [`sha2::sha224::Update`] type alias.
     #[cfg(feature = "sha2-224")]
-    pub type SHA224 = sha2::sha224::Update;
-
-    /// [`sha2::sha256::Update`] type alias.
+    pub use crate::SHA2_224 as SHA224;
     #[cfg(feature = "sha2-256")]
-    pub type SHA256 = sha2::sha256::Update;
-
-    /// [`sha2::sha384::Update`] type alias.
+    pub use crate::SHA2_256 as SHA256;
     #[cfg(feature = "sha2-384")]
-    pub type SHA384 = sha2::sha384::Update;
-
-    /// [`sha2::sha512::Update`] type alias.
+    pub use crate::SHA2_384 as SHA384;
     #[cfg(feature = "sha2-512")]
-    pub type SHA512 = sha2::sha512::Update;
+    pub use crate::SHA2_512 as SHA512;
 }
 
 #[cfg(test)]

@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Changed place of coverage badge in `README.md`.
 - Changed modules to be modules aliases via `pub use`.
+- Changed types to be types aliases via `pub use`.
 
 ## [0.4.0] - 2023-07-26
 
