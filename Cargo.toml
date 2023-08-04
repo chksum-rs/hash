@@ -43,8 +43,20 @@ name = "sha1"
 required-features = ["sha1"]
 
 [[test]]
-name = "sha2"
-required-features = ["sha2"]
+name = "sha2_224"
+required-features = ["sha2-224"]
+
+[[test]]
+name = "sha2_256"
+required-features = ["sha2-256"]
+
+[[test]]
+name = "sha2_384"
+required-features = ["sha2-384"]
+
+[[test]]
+name = "sha2_512"
+required-features = ["sha2-512"]
 
 [[example]]
 name = "md5"
