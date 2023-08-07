@@ -5,19 +5,25 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Fixed
+
+- Fixed headers level in `CHANGELOG.md`.
+
 ## [0.4.1] - 2023-08-05
 
-## Added
+### Added
 
 - Added link to GitHub Action in `README.md`.
 - Added badge to [deps.rs](https://deps.rs/) to keep dependencies up-to-date.
 - Added different `README.md` for Cargo.
 
-## Fixed
+### Fixed
 
 - Fixed tests code format to be rustfmt compatible.
 
-## Changed
+### Changed
 
 - Changed place of coverage badge in `README.md`.
 - Changed modules to be modules aliases via `pub use`.
@@ -26,20 +32,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [0.4.0] - 2023-07-26
 
-## Added
+### Added
 
 - Added algorithms description in docs.
 - Added `Digest`, `Update` and `Finalize` traits.
 - Added modules aliases and module aggregator for SHA-2 family.
 
-## Fixed
+### Fixed
 
 - Fixed typos in `README.md` and crate docs.
 - Fixed typos in limitations section in `examples/README.md`.
 - Fixed doc description for `Result` alias.
 - Fixed code format to be rustfmt compatible.
 
-## Changed
+### Changed
 
 - Changed crate description.
 - Changed `doc_cfg` feature with `doc_auto_cfg`.
@@ -99,6 +105,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Initial release.
 
+[Unreleased]: https://github.com/ferric-bytes/chksum-hash/compare/v0.4.1...HEAD
 [0.4.1]: https://github.com/ferric-bytes/chksum-hash/compare/v0.4.0...v0.4.1
 [0.4.0]: https://github.com/ferric-bytes/chksum-hash/compare/v0.3.0...v0.4.0
 [0.3.0]: https://github.com/ferric-bytes/chksum-hash/compare/v0.2.2...v0.3.0
