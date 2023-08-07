@@ -641,7 +641,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_new() {
+    fn new_empty() {
         let digest = new().digest();
         assert_eq!(
             digest,
@@ -650,7 +650,7 @@ mod tests {
     }
 
     #[test]
-    fn test_default() {
+    fn default_empty() {
         let digest = default().digest();
         assert_eq!(
             digest,
@@ -659,7 +659,7 @@ mod tests {
     }
 
     #[test]
-    fn test_empty() {
+    fn new_zeros() {
         #[rustfmt::skip]
         let data = [
             0x80000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,

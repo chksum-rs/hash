@@ -215,7 +215,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_as_bytes() {
+    fn as_bytes() {
         #[rustfmt::skip]
         let digest = [
             0xDA, 0x39, 0xA3, 0xEE,
@@ -228,7 +228,7 @@ mod tests {
     }
 
     #[test]
-    fn test_as_ref() {
+    fn as_ref() {
         #[rustfmt::skip]
         let digest = [
             0xDA, 0x39, 0xA3, 0xEE,
@@ -241,7 +241,7 @@ mod tests {
     }
 
     #[test]
-    fn test_format() {
+    fn format() {
         #[rustfmt::skip]
         let digest = Digest::new([
             0xDA, 0x39, 0xA3, 0xEE,
@@ -299,7 +299,7 @@ mod tests {
     }
 
     #[test]
-    fn test_from() {
+    fn from() {
         #[rustfmt::skip]
         let digest = [
             0xDA, 0x39, 0xA3, 0xEE,
@@ -313,7 +313,7 @@ mod tests {
     }
 
     #[test]
-    fn test_to_hex() {
+    fn to_hex() {
         #[rustfmt::skip]
         let digest = Digest::new([
             0xDA, 0x39, 0xA3, 0xEE,
@@ -328,7 +328,7 @@ mod tests {
 
     #[cfg(feature = "error")]
     #[test]
-    fn test_try_from() {
+    fn try_from() {
         assert_eq!(
             Digest::try_from("da39a3ee5e6b4b0d3255bfef95601890afd80709"),
             Digest::try_from("DA39A3EE5E6B4B0D3255BFEF95601890AFD80709")

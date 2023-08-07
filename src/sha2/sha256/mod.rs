@@ -446,16 +446,13 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_default() {
+    fn empty() {
         let digest = default().digest();
         assert_eq!(
             digest.to_hex_lowercase(),
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
-    }
 
-    #[test]
-    fn test_new() {
         let digest = new().digest();
         assert_eq!(
             digest.to_hex_lowercase(),
@@ -464,7 +461,7 @@ mod tests {
     }
 
     #[test]
-    fn test_reset() {
+    fn reset() {
         let digest = new().update("data").reset().digest();
         assert_eq!(
             digest.to_hex_lowercase(),
@@ -479,7 +476,7 @@ mod tests {
     }
 
     #[test]
-    fn test_hello_world() {
+    fn hello_world() {
         let digest = new().update("Hello World").digest();
         assert_eq!(
             digest.to_hex_lowercase(),
@@ -494,7 +491,7 @@ mod tests {
     }
 
     #[test]
-    fn test_rust_book() {
+    fn rust_book() {
         let phrase = "Welcome to The Rust Programming Language, an introductory book about Rust. The Rust programming \
                       language helps you write faster, more reliable software. High-level ergonomics and low-level \
                       control are often at odds in programming language design; Rust challenges that conflict. \
@@ -509,7 +506,7 @@ mod tests {
     }
 
     #[test]
-    fn test_partially_filled_internal_buffer() {
+    fn zeroes() {
         let data = vec![0u8; 64];
 
         let digest = new().update(&data[..60]).update(&data[60..]).digest();

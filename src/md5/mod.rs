@@ -452,55 +452,61 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_default() {
-        let digest = default().digest();
-        assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
+    fn empty() {
+        let digest = default().digest().to_hex_lowercase();
+        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
+
+        let digest = new().digest().to_hex_lowercase();
+        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
     }
 
     #[test]
-    fn test_new() {
-        let digest = new().digest();
-        assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
+    fn reset() {
+        let digest = new().update("data").reset().digest().to_hex_lowercase();
+        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
+
+        let digest = new().update("data").finalize().reset().digest().to_hex_lowercase();
+        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
     }
 
     #[test]
-    fn test_reset() {
-        let digest = new().update("data").reset().digest();
-        assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
+    fn hello_world() {
+        let digest = new().update("Hello World").digest().to_hex_lowercase();
+        assert_eq!(digest, "b10a8db164e0754105b7a99be72e3fe5");
 
-        let digest = new().update("data").finalize().reset().digest();
-        assert_eq!(digest.to_hex_lowercase(), "d41d8cd98f00b204e9800998ecf8427e");
+        let digest = new()
+            .update("Hello")
+            .update(" ")
+            .update("World")
+            .digest()
+            .to_hex_lowercase();
+        assert_eq!(digest, "b10a8db164e0754105b7a99be72e3fe5");
     }
 
     #[test]
-    fn test_hello_world() {
-        let digest = new().update("Hello World").digest();
-        assert_eq!(digest.to_hex_lowercase(), "b10a8db164e0754105b7a99be72e3fe5");
-
-        let digest = new().update("Hello").update(" ").update("World").digest();
-        assert_eq!(digest.to_hex_lowercase(), "b10a8db164e0754105b7a99be72e3fe5");
-    }
-
-    #[test]
-    fn test_rust_book() {
+    fn rust_book() {
         let phrase = "Welcome to The Rust Programming Language, an introductory book about Rust. The Rust programming \
                       language helps you write faster, more reliable software. High-level ergonomics and low-level \
                       control are often at odds in programming language design; Rust challenges that conflict. \
                       Through balancing powerful technical capacity and a great developer experience, Rust gives you \
                       the option to control low-level details (such as memory usage) without all the hassle \
                       traditionally associated with such control.";
-        let digest = hash(phrase);
-        assert_eq!(digest.to_hex_lowercase(), "21e3b4863269295e1670e055ffb57c2e");
+        let digest = hash(phrase).to_hex_lowercase();
+        assert_eq!(digest, "21e3b4863269295e1670e055ffb57c2e");
     }
 
     #[test]
-    fn test_partially_filled_internal_buffer() {
+    fn zeroes() {
         let data = vec![0u8; 64];
 
-        let digest = new().update(&data[..60]).digest();
-        assert_eq!(digest.to_hex_lowercase(), "a302a771ee0e3127b8950f0a67d17e49");
+        let digest = new().update(&data[..60]).digest().to_hex_lowercase();
+        assert_eq!(digest, "a302a771ee0e3127b8950f0a67d17e49");
 
-        let digest = new().update(&data[..60]).update(&data[60..]).digest();
-        assert_eq!(digest.to_hex_lowercase(), "3b5d3c7d207e37dceeedd301e35e2e58");
+        let digest = new()
+            .update(&data[..60])
+            .update(&data[60..])
+            .digest()
+            .to_hex_lowercase();
+        assert_eq!(digest, "3b5d3c7d207e37dceeedd301e35e2e58");
     }
 }

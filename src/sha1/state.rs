@@ -493,19 +493,19 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_new() {
+    fn new_empty() {
         let digest = new().digest();
         assert_eq!(digest, [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]);
     }
 
     #[test]
-    fn test_default() {
+    fn default_empty() {
         let digest = default().digest();
         assert_eq!(digest, [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476, 0xC3D2E1F0]);
     }
 
     #[test]
-    fn test_empty() {
+    fn new_zeros() {
         #[rustfmt::skip]
         let block= [
             0x80000000, 0x00000000, 0x00000000, 0x00000000,
