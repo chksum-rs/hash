@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Fixed
 
 - Fixed headers level in `CHANGELOG.md`.
+- Fixed word typo in `CHANGELOG.md`.
 
 ### Changed
 
@@ -33,7 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed place of coverage badge in `README.md`.
 - Changed modules to be modules aliases via `pub use`.
 - Changed types to be types aliases via `pub use`.
-- Changed SHA-2 tests to be splitted between files.
+- Changed SHA-2 tests to be split between files.
 
 ## [0.4.0] - 2023-07-26
 
