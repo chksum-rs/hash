@@ -2,13 +2,13 @@ use std::env;
 use std::fs::File;
 use std::io::{self, BufRead, BufReader};
 
-use chksum_hash::sha2;
+use chksum_hash::sha2_256;
 
 fn main() -> io::Result<()> {
     // Skip the first argument because it is not necessary to calculate digest of the binary itself
     for arg in env::args().skip(1) {
         // Create a new hash instance
-        let mut hash = sha2::sha256::new();
+        let mut hash = sha2_256::new();
 
         // Open the file
         let file = File::open(&arg)?;

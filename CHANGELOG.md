@@ -11,6 +11,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fixed headers level in `CHANGELOG.md`.
 
+### Changed
+
+- Changed usage of SHA-2 modules in examples to top-level alias.
+
 ## [0.4.1] - 2023-08-05
 
 ### Added
