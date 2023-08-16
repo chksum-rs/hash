@@ -164,7 +164,6 @@
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
 #![cfg_attr(nightly, feature(optimize_attribute))]
-#![cfg_attr(nightly, feature(no_coverage))]
 #![forbid(unsafe_code)]
 
 use std::fmt::{LowerHex, UpperHex};
