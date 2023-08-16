@@ -36,7 +36,7 @@ const SHIFTS: [u32; 16] = [
 ///
 /// let state = md5::state::new();
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub const fn new() -> State {
     State::new()
@@ -51,7 +51,7 @@ pub const fn new() -> State {
 ///
 /// let state = md5::state::default();
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub fn default() -> State {
     State::default()
@@ -177,20 +177,20 @@ impl State {
     ///     [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476]
     /// );
     /// ```
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub const fn digest(&self) -> [u32; 4] {
         let Self { a, b, c, d } = *self;
         [a, b, c, d]
     }
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     const fn from_raw(a: u32, b: u32, c: u32, d: u32) -> Self {
         Self { a, b, c, d }
     }
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     const fn new() -> Self {
         Self::from_raw(A, B, C, D)
@@ -218,12 +218,12 @@ impl State {
 
         // Round 1
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn f(x: u32, y: u32, z: u32) -> u32 {
             (x & y) | (!x & z)
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn ff(a: u32, b: u32, c: u32, d: u32, data: u32, shl: u32, constant: u32) -> u32 {
             a.wrapping_add(f(b, c, d))
                 .wrapping_add(data)
@@ -251,12 +251,12 @@ impl State {
 
         // Round 2
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn g(x: u32, y: u32, z: u32) -> u32 {
             (x & z) | (y & !z)
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn gg(a: u32, b: u32, c: u32, d: u32, data: u32, shl: u32, constant: u32) -> u32 {
             a.wrapping_add(g(b, c, d))
                 .wrapping_add(data)
@@ -284,12 +284,12 @@ impl State {
 
         // Round 3
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn h(x: u32, y: u32, z: u32) -> u32 {
             x ^ y ^ z
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn hh(a: u32, b: u32, c: u32, d: u32, data: u32, shl: u32, constant: u32) -> u32 {
             a.wrapping_add(h(b, c, d))
                 .wrapping_add(data)
@@ -317,12 +317,12 @@ impl State {
 
         // Round 4
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn i(x: u32, y: u32, z: u32) -> u32 {
             y ^ (x | !z)
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn ii(a: u32, b: u32, c: u32, d: u32, data: u32, shl: u32, constant: u32) -> u32 {
             a.wrapping_add(i(b, c, d))
                 .wrapping_add(data)
@@ -375,7 +375,7 @@ impl State {
     /// let digest = state.reset().digest();
     /// assert_eq!(digest, [0x67452301, 0xEFCDAB89, 0x98BADCFE, 0x10325476]);
     /// ```
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub const fn reset(self) -> Self {
         Self::from_raw(A, B, C, D)
@@ -383,7 +383,7 @@ impl State {
 }
 
 impl Default for State {
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn default() -> Self {
         Self::new()
     }

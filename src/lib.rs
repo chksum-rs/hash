@@ -155,7 +155,6 @@
 //! ## Compilation
 //!
 //! * `error`: Adds [`Error`] related implementations.
-//! * `inline`: Adds `#[inline]` attribute to some methods on release build.
 //!
 //! By default all of them are enabled.
 //!
@@ -207,7 +206,7 @@ pub use sha2::sha512 as sha2_512;
 ///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
 /// );
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub fn default<T>() -> T
 where
@@ -229,7 +228,7 @@ where
 ///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 /// );
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub fn hash<T, U>(data: U) -> T::Digest
 where
@@ -244,7 +243,7 @@ where
 /// Types implementing [`Digest`] are able to be returned as a digest from function [`hash`].
 pub trait Digest: AsRef<[u8]> + LowerHex + UpperHex + Eq {
     /// Returns digest bytes as a byte slice.
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     fn as_bytes(&self) -> &[u8] {
         self.as_ref()
@@ -270,7 +269,7 @@ pub trait Update: Default {
     fn finalize(&self) -> Self::Finalize;
 
     /// Produces digest.
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     fn digest(&self) -> Self::Digest {
         self.finalize().digest()

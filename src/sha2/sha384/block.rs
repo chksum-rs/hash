@@ -9,7 +9,7 @@ pub const LENGTH_QWORDS: usize = LENGTH_DWORDS / 2;
 pub(super) struct Block([u8; LENGTH_BYTES]);
 
 impl From<Block> for [u64; LENGTH_QWORDS] {
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[rustfmt::skip]
     fn from(Block(block): Block) -> Self {
         [
@@ -36,7 +36,7 @@ impl From<Block> for [u64; LENGTH_QWORDS] {
 impl TryFrom<&[u8]> for Block {
     type Error = TryFromSliceError;
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn try_from(block: &[u8]) -> Result<Self, Self::Error> {
         block.try_into().map(Self)
     }

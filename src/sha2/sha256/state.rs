@@ -36,7 +36,7 @@ const K: [u32; 64] = [
 ///
 /// let state = sha2::sha256::state::new();
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub const fn new() -> State {
     State::new()
@@ -51,7 +51,7 @@ pub const fn new() -> State {
 ///
 /// let state = sha2::sha256::state::default();
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub fn default() -> State {
     State::default()
@@ -196,14 +196,14 @@ impl State {
     ///     ]
     /// );
     /// ```
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub const fn digest(&self) -> [u32; LENGTH_DWORDS] {
         [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h]
     }
 
     #[allow(clippy::too_many_arguments)]
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     const fn from_raw(a: u32, b: u32, c: u32, d: u32, e: u32, f: u32, g: u32, h: u32) -> Self {
         Self { a, b, c, d, e, f, g, h }
@@ -218,7 +218,7 @@ impl State {
     ///
     /// let state = sha2::sha256::state::new();
     /// ```
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     const fn new() -> Self {
         let [a, b, c, d, e, f, g, h] = H;
@@ -246,12 +246,12 @@ impl State {
     #[cfg_attr(nightly, optimize(speed))]
     #[must_use]
     pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn small_sigma0(x: u32) -> u32 {
             x.rotate_right(7) ^ x.rotate_right(18) ^ (x >> 3)
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn small_sigma1(x: u32) -> u32 {
             x.rotate_right(17) ^ x.rotate_right(19) ^ (x >> 10)
         }
@@ -470,28 +470,28 @@ impl State {
 
         let state = *self;
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn ch(x: u32, y: u32, z: u32) -> u32 {
             (x & y) ^ (!x & z)
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn maj(x: u32, y: u32, z: u32) -> u32 {
             (x & y) ^ (x & z) ^ (y & z)
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn capital_sigma0(x: u32) -> u32 {
             x.rotate_right(2) ^ x.rotate_right(13) ^ x.rotate_right(22)
         }
 
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         const fn capital_sigma1(x: u32) -> u32 {
             x.rotate_right(6) ^ x.rotate_right(11) ^ x.rotate_right(25)
         }
 
         #[allow(clippy::too_many_arguments)]
-        #[cfg_attr(all(release, feature = "inline"), inline)]
+        #[inline]
         #[rustfmt::skip]
         const fn round(State { a, b, c, d, e, f, g, h }: State, w: u32, k: u32) -> State {
             let t1 = h
@@ -621,7 +621,7 @@ impl State {
     ///     ]
     /// );
     /// ```
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub const fn reset(self) -> Self {
         let [a, b, c, d, e, f, g, h] = H;
@@ -630,7 +630,7 @@ impl State {
 }
 
 impl Default for State {
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn default() -> Self {
         Self::new()
     }

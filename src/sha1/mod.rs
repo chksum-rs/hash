@@ -130,7 +130,7 @@ use state::State;
 ///     "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd"
 /// );
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub fn new() -> Update {
     Update::new()
@@ -151,7 +151,7 @@ pub fn new() -> Update {
 ///     "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd"
 /// );
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub fn default() -> Update {
     Update::default()
@@ -170,7 +170,7 @@ pub fn default() -> Update {
 ///     "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd"
 /// );
 /// ```
-#[cfg_attr(all(release, feature = "inline"), inline)]
+#[inline]
 #[must_use]
 pub fn hash<T>(data: T) -> Digest
 where
@@ -188,7 +188,7 @@ pub struct Update {
 }
 
 impl Update {
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     fn new() -> Self {
         let state = state::new();
@@ -202,7 +202,7 @@ impl Update {
     }
 
     /// Produces final digest.
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub fn digest(&self) -> Digest {
         self.finalize().digest()
@@ -362,7 +362,7 @@ impl Update {
     ///     "da39a3ee5e6b4b0d3255bfef95601890afd80709"
     /// );
     /// ```
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub fn reset(self) -> Self {
         let (state, unprocessed, processed) = {
@@ -384,7 +384,7 @@ impl crate::Update for Update {
     type Digest = Digest;
     type Finalize = Finalize;
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn update<T>(self, data: T) -> Self
     where
         T: AsRef<[u8]>,
@@ -392,19 +392,19 @@ impl crate::Update for Update {
         self.update(data)
     }
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn finalize(&self) -> Self::Finalize {
         self.finalize()
     }
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn reset(self) -> Self {
         self.reset()
     }
 }
 
 impl Default for Update {
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn default() -> Self {
         Self::new()
     }
@@ -418,14 +418,14 @@ pub struct Finalize {
 
 impl Finalize {
     /// Produces digest.
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub fn digest(&self) -> Digest {
         self.state.into()
     }
 
     /// Resets state to default.
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     #[must_use]
     pub fn reset(&self) -> Update {
         Update::new()
@@ -436,12 +436,12 @@ impl crate::Finalize for Finalize {
     type Digest = Digest;
     type Update = Update;
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn digest(&self) -> Self::Digest {
         self.digest()
     }
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn reset(&self) -> Self::Update {
         self.reset()
     }

@@ -17,6 +17,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed usage of SHA-2 modules in examples to top-level alias.
 - Changed tests names and split them into many.
 
+### Removed
+
+- Removed `inline` feature.
+
 ## [0.4.1] - 2023-08-05
 
 ### Added

@@ -8,7 +8,7 @@ pub const LENGTH_DWORDS: usize = LENGTH_WORDS / 2;
 pub(super) struct Block([u8; LENGTH_BYTES]);
 
 impl From<Block> for [u32; LENGTH_DWORDS] {
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn from(Block(block): Block) -> Self {
         [
             u32::from_le_bytes([block[0x00], block[0x01], block[0x02], block[0x03]]),
@@ -34,7 +34,7 @@ impl From<Block> for [u32; LENGTH_DWORDS] {
 impl TryFrom<&[u8]> for Block {
     type Error = TryFromSliceError;
 
-    #[cfg_attr(all(release, feature = "inline"), inline)]
+    #[inline]
     fn try_from(block: &[u8]) -> Result<Self, Self::Error> {
         block.try_into().map(Self)
     }
