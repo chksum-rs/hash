@@ -20,11 +20,23 @@ thiserror = { version = "1.0.31", optional = true }
 
 [build-dependencies]
 anyhow = "1.0.65"
-chksum-build = { version = "0.0.3", default-features = false, features = ["script"] }
+chksum-build = { version = "0.0.3", default-features = false, features = ["script"], optional = true }
 
 [features]
-default = ["error", "md5", "sha1", "sha2"]
+default = [
+    # compilation
+    "error",
+    # algorithms
+    "md5",
+    "sha1",
+    "sha2",
+]
+
+# compilation
 error = ["thiserror"]
+unstable = ["chksum-build"]
+
+# algorithms
 md5 = []
 sha1 = []
 sha2 = ["sha2-224", "sha2-256", "sha2-384", "sha2-512"]

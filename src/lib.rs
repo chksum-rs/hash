@@ -155,8 +155,9 @@
 //! ## Compilation
 //!
 //! * `error`: Adds [`Error`] related implementations.
+//! * `unstable`: Enables unstable options (like build script).
 //!
-//! By default all of them are enabled.
+//! By default only `error` is enabled.
 //!
 //! # License
 //!
