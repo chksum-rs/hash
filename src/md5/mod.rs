@@ -111,7 +111,8 @@ pub mod state;
 use block::Block;
 pub use block::LENGTH_BYTES as BLOCK_LENGTH_BYTES;
 pub use digest::{Digest, LENGTH_BYTES as DIGEST_LENGTH_BYTES};
-use state::State;
+#[doc(inline)]
+pub use state::State;
 
 /// Creates new hash instance.
 ///

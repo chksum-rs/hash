@@ -158,6 +158,7 @@ pub fn default() -> State {
 ///     [0xA2F4ED57, 0x55C9E32B, 0x2EDA49AC, 0x7AB60721]
 /// );
 /// ```
+#[doc(hidden)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct State {
     pub(super) a: u32,

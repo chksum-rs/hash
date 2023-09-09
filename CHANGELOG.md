@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 
 - Changed `Vec` creation in tests.
+- Changed reexporting `State` structs.
 
 ### Removed
 

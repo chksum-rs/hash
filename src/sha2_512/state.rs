@@ -204,6 +204,7 @@ pub fn default() -> State {
 ///     ]
 /// );
 /// ```
+#[doc(hidden)]
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct State {
     pub(super) a: u64,
