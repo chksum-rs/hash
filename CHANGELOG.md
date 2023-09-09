@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added `pub use` of block length bytes const.
 - Added missing docs for digest length consts.
 - Added `pub use` of digest length bytes const.
+- Added extra `to_hex_*case` functions to `Update` structs.
 
 ### Fixed
 

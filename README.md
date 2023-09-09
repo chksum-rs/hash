@@ -41,9 +41,9 @@ Use `hash` function for batch digest calculation.
 ```rust
 use chksum_hash::{hash, SHA2_224};
 
-let digest = hash::<SHA2_224, _>(b"somedata");
+let digest = hash::<SHA2_224, _>(b"somedata").to_hex_lowercase();
 assert_eq!(
-    digest.to_hex_lowercase(),
+    digest,
     "a39b86d838273f5ff4879c26f85e3cb333bb44d73b24f275bad1a6c6"
 );
 ```
@@ -57,9 +57,9 @@ let digest = default::<SHA2_256>()
     .update("some")
     .update(b"data")
     .update([0, 1, 2, 3])
-    .digest();
+    .to_hex_lowercase();
 assert_eq!(
-    digest.to_hex_lowercase(),
+    digest,
     "5c3bfbc8614adc72d3ec0e9b15a1fd1c55cee63e34af5a4ff058eb2eef7d8482"
 );
 ```

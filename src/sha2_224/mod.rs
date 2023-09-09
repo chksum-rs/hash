@@ -245,6 +245,20 @@ impl Update {
         Finalize { state }
     }
 
+    /// Returns lowercase hexadecimal representation of digest.
+    #[inline]
+    #[must_use]
+    pub fn to_hex_lowercase(&self) -> String {
+        self.digest().to_hex_lowercase()
+    }
+
+    /// Returns uppercase hexadecimal representation of digest.
+    #[inline]
+    #[must_use]
+    pub fn to_hex_uppercase(&self) -> String {
+        self.digest().to_hex_uppercase()
+    }
+
     /// Processes incoming data.
     ///
     /// # Performance issues
@@ -435,33 +449,28 @@ mod tests {
 
     #[test]
     fn empty() {
-        let digest = default().digest().to_hex_lowercase();
+        let digest = default().to_hex_lowercase();
         assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
 
-        let digest = new().digest().to_hex_lowercase();
+        let digest = new().to_hex_lowercase();
         assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
     }
 
     #[test]
     fn reset() {
-        let digest = new().update("data").reset().digest().to_hex_lowercase();
+        let digest = new().update("data").reset().to_hex_lowercase();
         assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
 
-        let digest = new().update("data").finalize().reset().digest().to_hex_lowercase();
+        let digest = new().update("data").finalize().reset().to_hex_lowercase();
         assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
     }
 
     #[test]
     fn hello_world() {
-        let digest = new().update("Hello World").digest().to_hex_lowercase();
+        let digest = new().update("Hello World").to_hex_lowercase();
         assert_eq!(digest, "c4890faffdb0105d991a461e668e276685401b02eab1ef4372795047");
 
-        let digest = new()
-            .update("Hello")
-            .update(" ")
-            .update("World")
-            .digest()
-            .to_hex_lowercase();
+        let digest = new().update("Hello").update(" ").update("World").to_hex_lowercase();
         assert_eq!(digest, "c4890faffdb0105d991a461e668e276685401b02eab1ef4372795047");
     }
 
@@ -480,7 +489,6 @@ mod tests {
         let digest = new()
             .update(&phrase[..BLOCK_LENGTH_BYTES - 4])
             .update(&phrase[BLOCK_LENGTH_BYTES - 4..])
-            .digest()
             .to_hex_lowercase();
         assert_eq!(digest, "ed123a70f9bf57341c91260608e68ce2b483da4f5000a7db32d4e1cb");
     }
@@ -489,14 +497,10 @@ mod tests {
     fn zeroes() {
         let data = vec![0u8; 64];
 
-        let digest = new().update(&data[..60]).digest().to_hex_lowercase();
+        let digest = new().update(&data[..60]).to_hex_lowercase();
         assert_eq!(digest, "3fe5b353056d4b16fce534d8de0651b38283d7ffc5b974d8b16346fe");
 
-        let digest = new()
-            .update(&data[..60])
-            .update(&data[60..])
-            .digest()
-            .to_hex_lowercase();
+        let digest = new().update(&data[..60]).update(&data[60..]).to_hex_lowercase();
         assert_eq!(digest, "750d81a39c18d3ce27ff3e5ece30b0088f12d8fd0450fe435326294b");
     }
 }

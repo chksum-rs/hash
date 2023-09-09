@@ -256,6 +256,20 @@ impl Update {
         Finalize { state }
     }
 
+    /// Returns lowercase hexadecimal representation of digest.
+    #[inline]
+    #[must_use]
+    pub fn to_hex_lowercase(&self) -> String {
+        self.digest().to_hex_lowercase()
+    }
+
+    /// Returns uppercase hexadecimal representation of digest.
+    #[inline]
+    #[must_use]
+    pub fn to_hex_uppercase(&self) -> String {
+        self.digest().to_hex_uppercase()
+    }
+
     /// Processes incoming data.
     ///
     /// # Performance issues
@@ -446,45 +460,45 @@ mod tests {
 
     #[test]
     fn empty() {
-        let digest = default().digest();
+        let digest = default().to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
 
-        let digest = new().digest();
+        let digest = new().to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
     }
 
     #[test]
     fn reset() {
-        let digest = new().update("data").reset().digest();
+        let digest = new().update("data").reset().to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
 
-        let digest = new().update("data").finalize().reset().digest();
+        let digest = new().update("data").finalize().reset().to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
     }
 
     #[test]
     fn hello_world() {
-        let digest = new().update("Hello World").digest();
+        let digest = new().update("Hello World").to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
         );
 
-        let digest = new().update("Hello").update(" ").update("World").digest();
+        let digest = new().update("Hello").update(" ").update("World").to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
         );
     }
@@ -498,16 +512,15 @@ mod tests {
                       the option to control low-level details (such as memory usage) without all the hassle \
                       traditionally associated with such control.";
 
-        let digest = hash(phrase);
+        let digest = hash(phrase).to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "b2de5395f39bf32376693a9cdccc13da1d705d0eb9e9ec8c566a91f604fcc942"
         );
 
         let digest = new()
             .update(&phrase[..BLOCK_LENGTH_BYTES - 4])
             .update(&phrase[BLOCK_LENGTH_BYTES - 4..])
-            .digest()
             .to_hex_lowercase();
         assert_eq!(
             digest,
@@ -519,15 +532,15 @@ mod tests {
     fn zeroes() {
         let data = vec![0u8; 64];
 
-        let digest = new().update(&data[..60]).update(&data[60..]).digest();
+        let digest = new().update(&data[..60]).update(&data[60..]).to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
         );
 
-        let digest = new().update(&data[..60]).digest();
+        let digest = new().update(&data[..60]).to_hex_lowercase();
         assert_eq!(
-            digest.to_hex_lowercase(),
+            digest,
             "5dcc1b5872dd9ff1c234501f1fefda01f664164e1583c3e1bb3dbea47588ab31"
         );
     }

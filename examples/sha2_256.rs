@@ -28,7 +28,7 @@ fn main() -> io::Result<()> {
             reader.consume(length);
         }
 
-        let digest = hash.digest().to_hex_lowercase();
+        let digest = hash.to_hex_lowercase();
 
         println!("{arg} {digest}");
     }

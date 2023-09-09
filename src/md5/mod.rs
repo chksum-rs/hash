@@ -262,6 +262,20 @@ impl Update {
         Finalize { state }
     }
 
+    /// Returns lowercase hexadecimal representation of digest.
+    #[inline]
+    #[must_use]
+    pub fn to_hex_lowercase(&self) -> String {
+        self.digest().to_hex_lowercase()
+    }
+
+    /// Returns uppercase hexadecimal representation of digest.
+    #[inline]
+    #[must_use]
+    pub fn to_hex_uppercase(&self) -> String {
+        self.digest().to_hex_uppercase()
+    }
+
     /// Processes incoming data.
     ///
     /// # Performance issues
@@ -452,33 +466,28 @@ mod tests {
 
     #[test]
     fn empty() {
-        let digest = default().digest().to_hex_lowercase();
+        let digest = default().to_hex_lowercase();
         assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
 
-        let digest = new().digest().to_hex_lowercase();
+        let digest = new().to_hex_lowercase();
         assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
     }
 
     #[test]
     fn reset() {
-        let digest = new().update("data").reset().digest().to_hex_lowercase();
+        let digest = new().update("data").reset().to_hex_lowercase();
         assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
 
-        let digest = new().update("data").finalize().reset().digest().to_hex_lowercase();
+        let digest = new().update("data").finalize().reset().to_hex_lowercase();
         assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
     }
 
     #[test]
     fn hello_world() {
-        let digest = new().update("Hello World").digest().to_hex_lowercase();
+        let digest = new().update("Hello World").to_hex_lowercase();
         assert_eq!(digest, "b10a8db164e0754105b7a99be72e3fe5");
 
-        let digest = new()
-            .update("Hello")
-            .update(" ")
-            .update("World")
-            .digest()
-            .to_hex_lowercase();
+        let digest = new().update("Hello").update(" ").update("World").to_hex_lowercase();
         assert_eq!(digest, "b10a8db164e0754105b7a99be72e3fe5");
     }
 
@@ -497,7 +506,6 @@ mod tests {
         let digest = new()
             .update(&phrase[..BLOCK_LENGTH_BYTES - 4])
             .update(&phrase[BLOCK_LENGTH_BYTES - 4..])
-            .digest()
             .to_hex_lowercase();
         assert_eq!(digest, "21e3b4863269295e1670e055ffb57c2e");
     }
@@ -509,11 +517,7 @@ mod tests {
         let digest = new().update(&data[..60]).digest().to_hex_lowercase();
         assert_eq!(digest, "a302a771ee0e3127b8950f0a67d17e49");
 
-        let digest = new()
-            .update(&data[..60])
-            .update(&data[60..])
-            .digest()
-            .to_hex_lowercase();
+        let digest = new().update(&data[..60]).update(&data[60..]).to_hex_lowercase();
         assert_eq!(digest, "3b5d3c7d207e37dceeedd301e35e2e58");
     }
 }
