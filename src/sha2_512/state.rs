@@ -43,9 +43,9 @@ const K: [u64; 80] = [
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_512;
 ///
-/// let state = sha2::sha512::new();
+/// let state = sha2_512::new();
 /// ```
 #[inline]
 #[must_use]
@@ -58,9 +58,9 @@ pub const fn new() -> State {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_512;
 ///
-/// let state = sha2::sha512::default();
+/// let state = sha2_512::default();
 /// ```
 #[inline]
 #[must_use]
@@ -77,9 +77,9 @@ pub fn default() -> State {
 /// Process empty block.
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_512;
 ///
-/// let mut state = sha2::sha512::state::new();
+/// let mut state = sha2_512::state::new();
 /// assert_eq!(
 ///     state.digest(),
 ///     [
@@ -131,9 +131,9 @@ pub fn default() -> State {
 /// Process two blocks of data.
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_512;
 ///
-/// let mut state = sha2::sha512::state::new();
+/// let mut state = sha2_512::state::new();
 /// assert_eq!(
 ///     state.digest(),
 ///     [
@@ -220,9 +220,9 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_512;
     ///
-    /// let state = sha2::sha512::state::new();
+    /// let state = sha2_512::state::new();
     /// assert_eq!(
     ///     state.digest(),
     ///     [
@@ -256,9 +256,9 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_512;
     ///
-    /// let state = sha2::sha512::state::new();
+    /// let state = sha2_512::state::new();
     /// ```
     #[inline]
     #[must_use]
@@ -272,9 +272,9 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_512;
     ///
-    /// let mut state = sha2::sha512::state::new();
+    /// let mut state = sha2_512::state::new();
     /// let data = [0x00; 16];
     /// state = state.update(data);
     /// assert_eq!(
@@ -731,9 +731,9 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_512;
     ///
-    /// let mut state = sha2::sha512::state::new();
+    /// let mut state = sha2_512::state::new();
     /// let data = [0x00; 16];
     /// state = state.update(data);
     /// let digest = state.digest();

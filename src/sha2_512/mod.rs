@@ -1,16 +1,16 @@
-//! Implementation of SHA-2 256 hash function based on [FIPS PUB 180-4: Secure Hash Standard](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf).
+//! Implementation of SHA-2 512 hash function based on [FIPS PUB 180-4: Secure Hash Standard](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf).
 //!
 //! # Batch processing
 //!
 //! Digest of known-size data can be calculated with [`hash`] function.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_512;
 //!
-//! let digest = sha2::sha256::hash("some data");
+//! let digest = sha2_512::hash("some data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "1307990e6ba5ca145eb35e99182a9bec46531bc54ddf656a602c780fa0240dee"
+//!     "e1645e7492f032fb62c674db75500be7b260bfc0daa965821ddb3f8a49b5d33788ee3f046744e2b95afb5c3d8f2500c549ca89d79fc6890885d28e055007424f"
 //! );
 //! ```
 //!
@@ -25,15 +25,15 @@
 //! use std::fs::File;
 //! use std::io::Read;
 //!
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_512;
 //!
 //! # fn wrapper(path: PathBuf) -> io::Result<()> {
 //! // Create hash instance
-//! let mut hash = sha2::sha256::new();
+//! let mut hash = sha2_512::new();
 //!
 //! // Open file and create buffer for incoming data
 //! let mut file = File::open(path)?;
-//! let mut buffer = vec![0; 64];
+//! let mut buffer = vec![0; 128];
 //!
 //! // Iterate chunk by chunk
 //! while let Ok(count) = file.read(&mut buffer) {
@@ -51,7 +51,7 @@
 //! // Cast digest to hex and compare
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "1307990e6ba5ca145eb35e99182a9bec46531bc54ddf656a602c780fa0240dee"
+//!     "e1645e7492f032fb62c674db75500be7b260bfc0daa965821ddb3f8a49b5d33788ee3f046744e2b95afb5c3d8f2500c549ca89d79fc6890885d28e055007424f"
 //! );
 //! # Ok(())
 //! # }
@@ -72,29 +72,29 @@
 //! Everything that implements `AsRef<[u8]>` can be passed as an input.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_512;
 //!
-//! let digest = sha2::sha256::new()
+//! let digest = sha2_512::new()
 //!     .update("str")
 //!     .update(b"bytes")
 //!     .update([0x75, 0x38])
 //!     .digest();
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "61466aaea66ab788a5f507ecd6061292c95e18fb9e144eab023a899aa96b59cb"
+//!     "46a700a6419da55a9375a63860f441134370cc83ede59e7af64a7edbbaadfbb1132a39d0bffce951b9296b5333797e5ad62e1b03469999b4e6b005a3fb49ea98"
 //! );
 //! ```
 //!
 //! Since [`Digest`] implements `AsRef<[u8]>` then digests can be chained to implement hash digest of hash digest.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_512;
 //!
-//! let digest = sha2::sha256::hash(b"some data");
-//! let digest = sha2::sha256::hash(digest);
+//! let digest = sha2_512::hash(b"some data");
+//! let digest = sha2_512::hash(digest);
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "149078105941cd1edda0ec5a568fc1d178661b6441831c3647d88f41f7dfc886"
+//!     "e982af9db277cc3931999540e9b837807d88e2035084bf12383a2f52489b6a5201f90aaa4e72683305ea0109a459f76e3617241d086435db90a748a5b73b1d34"
 //! );
 //! ```
 
@@ -116,12 +116,12 @@ use state::State;
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_512;
 ///
-/// let digest = sha2::sha256::new().update("data").digest();
+/// let digest = sha2_512::new().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
+///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
 /// );
 /// ```
 #[inline]
@@ -137,12 +137,12 @@ pub fn new() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_512;
 ///
-/// let digest = sha2::sha256::default().update("data").digest();
+/// let digest = sha2_512::default().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
+///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
 /// );
 /// ```
 #[inline]
@@ -156,12 +156,12 @@ pub fn default() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_512;
 ///
-/// let digest = sha2::sha256::hash("data");
+/// let digest = sha2_512::hash("data");
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
+///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
 /// );
 /// ```
 #[inline]
@@ -218,7 +218,7 @@ impl Update {
         );
 
         let length = {
-            let length = (unprocessed.len() + processed) as u64;
+            let length = (unprocessed.len() + processed) as u128;
             let length = length * 8; // convert byte-length into bits-length
             length.to_be_bytes()
         };
@@ -341,19 +341,19 @@ impl Update {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_512;
     ///
-    /// let hash = sha2::sha256::new().update("data").finalize();
+    /// let hash = sha2_512::new().update("data").finalize();
     /// let digest = hash.digest();
     /// assert_eq!(
     ///     digest.to_hex_lowercase(),
-    ///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
+    ///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
     /// );
     /// let hash = hash.reset();
     /// let digest = hash.digest();
     /// assert_eq!(
     ///     digest.to_hex_lowercase(),
-    ///     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    ///     "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"
     /// );
     /// ```
     #[inline]
@@ -448,46 +448,28 @@ mod tests {
     #[test]
     fn empty() {
         let digest = default().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
 
         let digest = new().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
     }
 
     #[test]
     fn reset() {
         let digest = new().update("data").reset().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
 
         let digest = new().update("data").finalize().reset().digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
     }
 
     #[test]
     fn hello_world() {
         let digest = new().update("Hello World").digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "2c74fd17edafd80e8447b0d46741ee243b7eb74dd2149a0ab1b9246fb30382f27e853d8585719e0e67cbda0daa8f51671064615d645ae27acb15bfb1447f459b");
 
         let digest = new().update("Hello").update(" ").update("World").digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "2c74fd17edafd80e8447b0d46741ee243b7eb74dd2149a0ab1b9246fb30382f27e853d8585719e0e67cbda0daa8f51671064615d645ae27acb15bfb1447f459b");
     }
 
     #[test]
@@ -499,26 +481,17 @@ mod tests {
                       the option to control low-level details (such as memory usage) without all the hassle \
                       traditionally associated with such control.";
         let digest = hash(phrase);
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "b2de5395f39bf32376693a9cdccc13da1d705d0eb9e9ec8c566a91f604fcc942"
-        );
+        assert_eq!(digest.to_hex_lowercase(), "72a43851dd05d04f09faf88602c3a921867dd0410bd8ed2db223adc7586d93951e9d0367db023076bd0573064facebf127a0674d56d7ee4e3f0c3e334e277278");
     }
 
     #[test]
     fn zeroes() {
-        let data = vec![0u8; 64];
+        let data = vec![0u8; 128];
 
-        let digest = new().update(&data[..60]).update(&data[60..]).digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
-        );
+        let digest = new().update(&data[..120]).digest();
+        assert_eq!(digest.to_hex_lowercase(), "c106c47ad6eb79cd2290681cb04cb183effbd0b49402151385b2d07be966e2d50bc9db78e00bf30bb567ccdd3a1c7847260c94173ba215a0feabb0edeb643ff0");
 
-        let digest = new().update(&data[..60]).digest();
-        assert_eq!(
-            digest.to_hex_lowercase(),
-            "5dcc1b5872dd9ff1c234501f1fefda01f664164e1583c3e1bb3dbea47588ab31"
-        );
+        let digest = new().update(&data[..120]).update(&data[120..]).digest();
+        assert_eq!(digest.to_hex_lowercase(), "ab942f526272e456ed68a979f50202905ca903a141ed98443567b11ef0bf25a552d639051a01be58558122c58e3de07d749ee59ded36acf0c55cd91924d6ba11");
     }
 }

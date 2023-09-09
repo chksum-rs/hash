@@ -85,58 +85,58 @@
 //! ### SHA-2 224
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_224;
 //!
-//! let digest = sha2::sha224::hash(b"data");
+//! let digest = sha2_224::hash(b"data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
 //! );
 //! ```
 //!
-//! Check [`sha2::sha224`] module for more informations and usage examples.
+//! Check [`sha2_224`] module for more informations and usage examples.
 //!
 //! ### SHA-2 256
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_256;
 //!
-//! let digest = sha2::sha256::hash(b"data");
+//! let digest = sha2_256::hash(b"data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 //! );
 //! ```
 //!
-//! Check [`sha2::sha256`] module for more informations and usage examples.
+//! Check [`sha2_256`] module for more informations and usage examples.
 //!
 //! ### SHA-2 384
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_384;
 //!
-//! let digest = sha2::sha384::hash(b"data");
+//! let digest = sha2_384::hash(b"data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
 //! );
 //! ```
 //!
-//! Check [`sha2::sha384`] module for more informations and usage examples.
+//! Check [`sha2_384`] module for more informations and usage examples.
 //!
 //! ### SHA-2 512
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_512;
 //!
-//! let digest = sha2::sha512::hash(b"data");
+//! let digest = sha2_512::hash(b"data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
 //! );
 //! ```
 //!
-//! Check [`sha2::sha512`] module for more informations and usage examples.
+//! Check [`sha2_512`] module for more informations and usage examples.
 //!
 //! # Feature flags
 //!
@@ -175,32 +175,26 @@ mod error;
 pub mod md5;
 #[cfg(feature = "sha1")]
 pub mod sha1;
-#[cfg(any(
-    feature = "sha2-224",
-    feature = "sha2-256",
-    feature = "sha2-384",
-    feature = "sha2-512"
-))]
-pub mod sha2;
+#[cfg(feature = "sha2-224")]
+pub mod sha2_224;
+#[cfg(feature = "sha2-256")]
+pub mod sha2_256;
+#[cfg(feature = "sha2-384")]
+pub mod sha2_384;
+#[cfg(feature = "sha2-512")]
+pub mod sha2_512;
+
 #[cfg(feature = "error")]
 pub use error::{Error, Result};
-#[cfg(feature = "sha2-224")]
-pub use sha2::sha224 as sha2_224;
-#[cfg(feature = "sha2-256")]
-pub use sha2::sha256 as sha2_256;
-#[cfg(feature = "sha2-384")]
-pub use sha2::sha384 as sha2_384;
-#[cfg(feature = "sha2-512")]
-pub use sha2::sha512 as sha2_512;
 
 /// Creates default hash instance.
 ///
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::{default, SHA2};
+/// use chksum_hash::{default, SHA2_224};
 ///
-/// let digest = default::<SHA2::SHA224>().update("data").digest();
+/// let digest = default::<SHA2_224>().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
 ///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
@@ -347,7 +341,7 @@ pub type MD5 = md5::Update;
 #[cfg(feature = "sha1")]
 pub type SHA1 = sha1::Update;
 
-/// [`sha2::sha224::Update`] type alias.
+/// [`sha2_224::Update`] type alias.
 ///
 /// # Examples
 ///
@@ -370,9 +364,9 @@ pub type SHA1 = sha1::Update;
 ///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
 /// );
 #[cfg(feature = "sha2-224")]
-pub type SHA2_224 = sha2::sha224::Update;
+pub type SHA2_224 = sha2_224::Update;
 
-/// [`sha2::sha256::Update`] type alias.
+/// [`sha2_256::Update`] type alias.
 ///
 /// # Examples
 ///
@@ -395,9 +389,9 @@ pub type SHA2_224 = sha2::sha224::Update;
 ///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 /// );
 #[cfg(feature = "sha2-256")]
-pub type SHA2_256 = sha2::sha256::Update;
+pub type SHA2_256 = sha2_256::Update;
 
-/// [`sha2::sha384::Update`] type alias.
+/// [`sha2_384::Update`] type alias.
 ///
 /// # Examples
 ///
@@ -420,9 +414,9 @@ pub type SHA2_256 = sha2::sha256::Update;
 ///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
 /// );
 #[cfg(feature = "sha2-384")]
-pub type SHA2_384 = sha2::sha384::Update;
+pub type SHA2_384 = sha2_384::Update;
 
-/// [`sha2::sha512::Update`] type alias.
+/// [`sha2_512::Update`] type alias.
 ///
 /// # Examples
 ///
@@ -445,26 +439,7 @@ pub type SHA2_384 = sha2::sha384::Update;
 ///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
 /// );
 #[cfg(feature = "sha2-512")]
-pub type SHA2_512 = sha2::sha512::Update;
-
-/// Module aggregator for SHA-2 family hash functions.
-#[allow(non_snake_case)]
-#[cfg(any(
-    feature = "sha2-224",
-    feature = "sha2-256",
-    feature = "sha2-384",
-    feature = "sha2-512"
-))]
-pub mod SHA2 {
-    #[cfg(feature = "sha2-224")]
-    pub use crate::SHA2_224 as SHA224;
-    #[cfg(feature = "sha2-256")]
-    pub use crate::SHA2_256 as SHA256;
-    #[cfg(feature = "sha2-384")]
-    pub use crate::SHA2_384 as SHA384;
-    #[cfg(feature = "sha2-512")]
-    pub use crate::SHA2_512 as SHA512;
-}
+pub type SHA2_512 = sha2_512::Update;
 
 #[cfg(test)]
 mod tests {

@@ -3,7 +3,7 @@ use super::digest::LENGTH_DWORDS;
 
 #[allow(clippy::unreadable_literal)]
 const H: [u32; 8] = [
-    0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19,
+    0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7, 0xBEFA4FA4,
 ];
 
 #[allow(clippy::unreadable_literal)]
@@ -32,9 +32,9 @@ const K: [u32; 64] = [
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_224;
 ///
-/// let state = sha2::sha256::state::new();
+/// let state = sha2_224::state::new();
 /// ```
 #[inline]
 #[must_use]
@@ -47,9 +47,9 @@ pub const fn new() -> State {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_224;
 ///
-/// let state = sha2::sha256::state::default();
+/// let state = sha2_224::state::default();
 /// ```
 #[inline]
 #[must_use]
@@ -66,15 +66,12 @@ pub fn default() -> State {
 /// Process empty block.
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_224;
 ///
-/// let mut state = sha2::sha256::state::new();
+/// let mut state = sha2_224::state::new();
 /// assert_eq!(
 ///     state.digest(),
-///     [
-///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
-///         0x5BE0CD19,
-///     ]
+///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
 /// );
 /// let data = [
 ///     u32::from_be_bytes([0x80, 0x00, 0x00, 0x00]),
@@ -98,25 +95,19 @@ pub fn default() -> State {
 /// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
-///     [
-///         0xE3B0C442, 0x98FC1C14, 0x9AFBF4C8, 0x996FB924, 0x27AE41E4, 0x649B934C, 0xA495991B,
-///         0x7852B855,
-///     ]
+///     [0xD14A028C, 0x2A3A2BC9, 0x476102BB, 0x288234C4, 0x15A2B01F, 0x828EA62A, 0xC5B3E42F]
 /// );
 /// ```
 ///
 /// Process two blocks of data.
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_224;
 ///
-/// let mut state = sha2::sha256::state::new();
+/// let mut state = sha2_224::state::new();
 /// assert_eq!(
 ///     state.digest(),
-///     [
-///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
-///         0x5BE0CD19,
-///     ]
+///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
 /// );
 /// let data = [
 ///     u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
@@ -137,7 +128,7 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
 /// ];
-/// state = state.update(data);
+/// let state = state.update(data);
 /// let data = [
 ///     u32::from_be_bytes([0x35, 0x36, 0x37, 0x38]),
 ///     # u32::from_be_bytes([0x39, 0x30, 0x31, 0x32]),
@@ -158,13 +149,10 @@ pub fn default() -> State {
 ///     // ...
 ///     u32::from_be_bytes([0x00, 0x00, 0x02, 0x80]),
 /// ];
-/// state = state.update(data);
+/// let state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
-///     [
-///         0xF371BC4A, 0x311F2B00, 0x9EEF952D, 0xD83CA80E, 0x2B60026C, 0x8E935592, 0xD0F9C308,
-///         0x453C813E,
-///     ]
+///     [0xB50AECBE, 0x4E9BB0B5, 0x7BC5F3AE, 0x760A8E01, 0xDB24F203, 0xFB3CDCD1, 0x3148046E]
 /// );
 /// ```
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
@@ -185,21 +173,21 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_224;
     ///
-    /// let state = sha2::sha256::state::new();
+    /// let state = sha2_224::state::new();
     /// assert_eq!(
     ///     state.digest(),
-    ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
-    ///         0x5BE0CD19,
-    ///     ]
+    ///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
     /// );
     /// ```
     #[inline]
     #[must_use]
     pub const fn digest(&self) -> [u32; LENGTH_DWORDS] {
-        [self.a, self.b, self.c, self.d, self.e, self.f, self.g, self.h]
+        let Self {
+            a, b, c, d, e, f, g, ..
+        } = *self;
+        [a, b, c, d, e, f, g]
     }
 
     #[allow(clippy::too_many_arguments)]
@@ -214,9 +202,9 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_224;
     ///
-    /// let state = sha2::sha256::state::new();
+    /// let state = sha2_224::state::new();
     /// ```
     #[inline]
     #[must_use]
@@ -230,17 +218,14 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_224;
     ///
-    /// let mut state = sha2::sha256::state::new();
+    /// let mut state = sha2_224::state::new();
     /// let data = [0x00; 16];
     /// state = state.update(data);
-    /// assert_ne!(
+    /// assert_eq!(
     ///     state.digest(),
-    ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
-    ///         0x5BE0CD19,
-    ///     ]
+    ///     [0xDB04D220, 0xF639AB8E, 0x8E6B506D, 0xC54481DA, 0x63A5820F, 0x1294A139, 0x8EDCEF0E]
     /// );
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
@@ -494,11 +479,7 @@ impl State {
         #[inline]
         #[rustfmt::skip]
         const fn round(State { a, b, c, d, e, f, g, h }: State, w: u32, k: u32) -> State {
-            let t1 = h
-                .wrapping_add(capital_sigma1(e))
-                .wrapping_add(ch(e, f, g))
-                .wrapping_add(k)
-                .wrapping_add(w);
+            let t1 = h.wrapping_add(capital_sigma1(e)).wrapping_add(ch(e, f, g)).wrapping_add(k).wrapping_add(w);
             let t2 = capital_sigma0(a).wrapping_add(maj(a, b, c));
             let h = g;
             let g = f;
@@ -599,26 +580,20 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_224;
     ///
-    /// let mut state = sha2::sha256::state::new();
+    /// let mut state = sha2_224::state::new();
     /// let data = [0x00; 16];
     /// state = state.update(data);
     /// let digest = state.digest();
     /// assert_ne!(
     ///     digest,
-    ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
-    ///         0x5BE0CD19,
-    ///     ]
+    ///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
     /// );
     /// let digest = state.reset().digest();
     /// assert_eq!(
     ///     digest,
-    ///     [
-    ///         0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB,
-    ///         0x5BE0CD19,
-    ///     ]
+    ///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
     /// );
     /// ```
     #[inline]
@@ -645,7 +620,7 @@ mod tests {
         let digest = new().digest();
         assert_eq!(
             digest,
-            [0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19]
+            [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
         );
     }
 
@@ -654,21 +629,21 @@ mod tests {
         let digest = default().digest();
         assert_eq!(
             digest,
-            [0x6A09E667, 0xBB67AE85, 0x3C6EF372, 0xA54FF53A, 0x510E527F, 0x9B05688C, 0x1F83D9AB, 0x5BE0CD19]
+            [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
         );
     }
 
     #[test]
     fn new_zeros() {
         #[rustfmt::skip]
-        let data = [
+        let block = [
             0x80000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
             0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
         ];
-        let digest = new().update(data).digest();
+        let digest = new().update(block).digest();
         assert_eq!(
             digest,
-            [0xE3B0C442, 0x98FC1C14, 0x9AFBF4C8, 0x996FB924, 0x27AE41E4, 0x649B934C, 0xA495991B, 0x7852B855]
+            [0xD14A028C, 0x2A3A2BC9, 0x476102BB, 0x288234C4, 0x15A2B01F, 0x828EA62A, 0xC5B3E42F]
         );
     }
 }

@@ -5,9 +5,9 @@
 //! Digest of known-size data can be calculated with [`hash`] function.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_224;
 //!
-//! let digest = sha2::sha224::hash("some data");
+//! let digest = sha2_224::hash("some data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "9b3a5fec834f20c610403782024ac19eb2c7fec8537ce8e888c1920b"
@@ -24,12 +24,12 @@
 //! use std::fs::File;
 //! use std::io::Read;
 //!
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_224;
 //!
 //! # fn wrapper(path: PathBuf) -> io::Result<()> {
 //! let mut file = File::open(path)?;
 //! let mut buffer = vec![0; 64];
-//! let mut hash = sha2::sha224::new();
+//! let mut hash = sha2_224::new();
 //! while let Ok(count) = file.read(&mut buffer) {
 //!     if count == 0 {
 //!         break;
@@ -61,9 +61,9 @@
 //! Everything that implements `AsRef<[u8]>` can be passed as an input.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_224;
 //!
-//! let digest = sha2::sha224::new()
+//! let digest = sha2_224::new()
 //!     .update("str")
 //!     .update(b"bytes")
 //!     .update([0x75, 0x38])
@@ -77,10 +77,10 @@
 //! Since [`Digest`] implements `AsRef<[u8]>` then digests can be chained to implement hash digest of hash digest.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_224;
 //!
-//! let digest = sha2::sha224::hash(b"some data");
-//! let digest = sha2::sha224::hash(digest);
+//! let digest = sha2_224::hash(b"some data");
+//! let digest = sha2_224::hash(digest);
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
 //!     "1957ed4659eb6aae27b96c23d9cf7997e3a584f50bbad51fe84cde65"
@@ -105,9 +105,9 @@ use state::State;
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_224;
 ///
-/// let digest = sha2::sha224::new().update("data").digest();
+/// let digest = sha2_224::new().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
 ///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
@@ -126,9 +126,9 @@ pub fn new() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_224;
 ///
-/// let digest = sha2::sha224::default().update("data").digest();
+/// let digest = sha2_224::default().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
 ///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
@@ -145,9 +145,9 @@ pub fn default() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_224;
 ///
-/// let digest = sha2::sha224::hash("data");
+/// let digest = sha2_224::hash("data");
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
 ///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
@@ -330,9 +330,9 @@ impl Update {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_224;
     ///
-    /// let hash = sha2::sha224::new().update("data").finalize();
+    /// let hash = sha2_224::new().update("data").finalize();
     /// let digest = hash.digest();
     /// assert_eq!(
     ///     digest.to_hex_lowercase(),

@@ -1,30 +1,41 @@
 use super::block;
-use super::digest::LENGTH_DWORDS;
+use super::digest::LENGTH_QWORDS;
 
 #[allow(clippy::unreadable_literal)]
-const H: [u32; 8] = [
-    0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7, 0xBEFA4FA4,
+const H: [u64; 8] = [
+    0xCBBB9D5DC1059ED8,
+    0x629A292A367CD507,
+    0x9159015A3070DD17,
+    0x152FECD8F70E5939,
+    0x67332667FFC00B31,
+    0x8EB44A8768581511,
+    0xDB0C2E0D64F98FA7,
+    0x47B5481DBEFA4FA4,
 ];
 
 #[allow(clippy::unreadable_literal)]
 #[rustfmt::skip]
-const K: [u32; 64] = [
-    0x428A2F98, 0x71374491, 0xB5C0FBCF, 0xE9B5DBA5,
-    0x3956C25B, 0x59F111F1, 0x923F82A4, 0xAB1C5ED5,
-    0xD807AA98, 0x12835B01, 0x243185BE, 0x550C7DC3,
-    0x72BE5D74, 0x80DEB1FE, 0x9BDC06A7, 0xC19BF174,
-    0xE49B69C1, 0xEFBE4786, 0x0FC19DC6, 0x240CA1CC,
-    0x2DE92C6F, 0x4A7484AA, 0x5CB0A9DC, 0x76F988DA,
-    0x983E5152, 0xA831C66D, 0xB00327C8, 0xBF597FC7,
-    0xC6E00BF3, 0xD5A79147, 0x06CA6351, 0x14292967,
-    0x27B70A85, 0x2E1B2138, 0x4D2C6DFC, 0x53380D13,
-    0x650A7354, 0x766A0ABB, 0x81C2C92E, 0x92722C85,
-    0xA2BFE8A1, 0xA81A664B, 0xC24B8B70, 0xC76C51A3,
-    0xD192E819, 0xD6990624, 0xF40E3585, 0x106AA070,
-    0x19A4C116, 0x1E376C08, 0x2748774C, 0x34B0BCB5,
-    0x391C0CB3, 0x4ED8AA4A, 0x5B9CCA4F, 0x682E6FF3,
-    0x748F82EE, 0x78A5636F, 0x84C87814, 0x8CC70208,
-    0x90BEFFFA, 0xA4506CEB, 0xBEF9A3F7, 0xC67178F2,
+const K: [u64; 80] = [
+    0x428A2F98D728AE22, 0x7137449123EF65CD, 0xB5C0FBCFEC4D3B2F, 0xE9B5DBA58189DBBC,
+    0x3956C25BF348B538, 0x59F111F1B605D019, 0x923F82A4AF194F9B, 0xAB1C5ED5DA6D8118,
+    0xD807AA98A3030242, 0x12835B0145706FBE, 0x243185BE4EE4B28C, 0x550C7DC3D5FFB4E2,
+    0x72BE5D74F27B896F, 0x80DEB1FE3B1696B1, 0x9BDC06A725C71235, 0xC19BF174CF692694,
+    0xE49B69C19EF14AD2, 0xEFBE4786384F25E3, 0x0FC19DC68B8CD5B5, 0x240CA1CC77AC9C65,
+    0x2DE92C6F592B0275, 0x4A7484AA6EA6E483, 0x5CB0A9DCBD41FBD4, 0x76F988DA831153B5,
+    0x983E5152EE66DFAB, 0xA831C66D2DB43210, 0xB00327C898FB213F, 0xBF597FC7BEEF0EE4,
+    0xC6E00BF33DA88FC2, 0xD5A79147930AA725, 0x06CA6351E003826F, 0x142929670A0E6E70,
+    0x27B70A8546D22FFC, 0x2E1B21385C26C926, 0x4D2C6DFC5AC42AED, 0x53380D139D95B3DF,
+    0x650A73548BAF63DE, 0x766A0ABB3C77B2A8, 0x81C2C92E47EDAEE6, 0x92722C851482353B,
+    0xA2BFE8A14CF10364, 0xA81A664BBC423001, 0xC24B8B70D0F89791, 0xC76C51A30654BE30,
+    0xD192E819D6EF5218, 0xD69906245565A910, 0xF40E35855771202A, 0x106AA07032BBD1B8,
+    0x19A4C116B8D2D0C8, 0x1E376C085141AB53, 0x2748774CDF8EEB99, 0x34B0BCB5E19B48A8,
+    0x391C0CB3C5C95A63, 0x4ED8AA4AE3418ACB, 0x5B9CCA4F7763E373, 0x682E6FF3D6B2B8A3,
+    0x748F82EE5DEFB2FC, 0x78A5636F43172F60, 0x84C87814A1F0AB72, 0x8CC702081A6439EC,
+    0x90BEFFFA23631E28, 0xA4506CEBDE82BDE9, 0xBEF9A3F7B2C67915, 0xC67178F2E372532B,
+    0xCA273ECEEA26619C, 0xD186B8C721C0C207, 0xEADA7DD6CDE0EB1E, 0xF57D4F7FEE6ED178,
+    0x06F067AA72176FBA, 0x0A637DC5A2C898A6, 0x113F9804BEF90DAE, 0x1B710B35131C471B,
+    0x28DB77F523047D84, 0x32CAAB7B40C72493, 0x3C9EBE0A15C9BEBC, 0x431D67C49C100D4C,
+    0x4CC5D4BECB3E42B6, 0x597F299CFC657E2A, 0x5FCB6FAB3AD6FAEC, 0x6C44198C4A475817,
 ];
 
 /// Create new state instance.
@@ -32,9 +43,9 @@ const K: [u32; 64] = [
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_384;
 ///
-/// let state = sha2::sha224::state::new();
+/// let state = sha2_384::new();
 /// ```
 #[inline]
 #[must_use]
@@ -47,9 +58,9 @@ pub const fn new() -> State {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_384;
 ///
-/// let state = sha2::sha224::state::default();
+/// let state = sha2_384::default();
 /// ```
 #[inline]
 #[must_use]
@@ -66,105 +77,133 @@ pub fn default() -> State {
 /// Process empty block.
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_384;
 ///
-/// let mut state = sha2::sha224::state::new();
+/// let mut state = sha2_384::state::new();
 /// assert_eq!(
 ///     state.digest(),
-///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
+///     [
+///         0xCBBB9D5DC1059ED8,
+///         0x629A292A367CD507,
+///         0x9159015A3070DD17,
+///         0x152FECD8F70E5939,
+///         0x67332667FFC00B31,
+///         0x8EB44A8768581511,
+///     ]
 /// );
 /// let data = [
-///     u32::from_be_bytes([0x80, 0x00, 0x00, 0x00]),
-///     u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
+///     u64::from_be_bytes([0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 ///     // ...
-///     u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
+///     u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 /// ];
 /// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
-///     [0xD14A028C, 0x2A3A2BC9, 0x476102BB, 0x288234C4, 0x15A2B01F, 0x828EA62A, 0xC5B3E42F]
+///     [
+///         0x38B060A751AC9638,
+///         0x4CD9327EB1B1E36A,
+///         0x21FDB71114BE0743,
+///         0x4C0CC7BF63F6E1DA,
+///         0x274EDEBFE76F65FB,
+///         0xD51AD2F14898B95B,
+///     ]
 /// );
 /// ```
 ///
 /// Process two blocks of data.
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_384;
 ///
-/// let mut state = sha2::sha224::state::new();
+/// let mut state = sha2_384::state::new();
 /// assert_eq!(
 ///     state.digest(),
-///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
+///     [
+///         0xCBBB9D5DC1059ED8,
+///         0x629A292A367CD507,
+///         0x9159015A3070DD17,
+///         0x152FECD8F70E5939,
+///         0x67332667FFC00B31,
+///         0x8EB44A8768581511,
+///     ]
 /// );
 /// let data = [
-///     u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
-///     u32::from_be_bytes([0x35, 0x36, 0x37, 0x38]),
-///     # u32::from_be_bytes([0x39, 0x30, 0x31, 0x32]),
-///     # u32::from_be_bytes([0x33, 0x34, 0x35, 0x36]),
-///     # u32::from_be_bytes([0x37, 0x38, 0x39, 0x30]),
-///     # u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
-///     # u32::from_be_bytes([0x35, 0x36, 0x37, 0x38]),
-///     # u32::from_be_bytes([0x39, 0x30, 0x31, 0x32]),
-///     # u32::from_be_bytes([0x33, 0x34, 0x35, 0x36]),
-///     # u32::from_be_bytes([0x37, 0x38, 0x39, 0x30]),
-///     # u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
-///     # u32::from_be_bytes([0x35, 0x36, 0x37, 0x38]),
-///     # u32::from_be_bytes([0x39, 0x30, 0x31, 0x32]),
-///     # u32::from_be_bytes([0x33, 0x34, 0x35, 0x36]),
-///     # u32::from_be_bytes([0x37, 0x38, 0x39, 0x30]),
+///     u64::from_be_bytes([0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38]),
+///     u64::from_be_bytes([0x39, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36]),
+///     # u64::from_be_bytes([0x37, 0x38, 0x39, 0x30, 0x31, 0x32, 0x33, 0x34]),
+///     # u64::from_be_bytes([0x35, 0x36, 0x37, 0x38, 0x37, 0x38, 0x39, 0x30]),
+///     # u64::from_be_bytes([0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38]),
+///     # u64::from_be_bytes([0x39, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36]),
+///     # u64::from_be_bytes([0x37, 0x38, 0x39, 0x30, 0x31, 0x32, 0x33, 0x34]),
+///     # u64::from_be_bytes([0x35, 0x36, 0x37, 0x38, 0x37, 0x38, 0x39, 0x30]),
+///     # u64::from_be_bytes([0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38]),
+///     # u64::from_be_bytes([0x39, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36]),
+///     # u64::from_be_bytes([0x37, 0x38, 0x39, 0x30, 0x31, 0x32, 0x33, 0x34]),
+///     # u64::from_be_bytes([0x35, 0x36, 0x37, 0x38, 0x37, 0x38, 0x39, 0x30]),
+///     # u64::from_be_bytes([0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38]),
+///     # u64::from_be_bytes([0x39, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36]),
+///     # u64::from_be_bytes([0x37, 0x38, 0x39, 0x30, 0x31, 0x32, 0x33, 0x34]),
 ///     // ...
-///     u32::from_be_bytes([0x31, 0x32, 0x33, 0x34]),
+///     u64::from_be_bytes([0x35, 0x36, 0x37, 0x38, 0x37, 0x38, 0x39, 0x30]),
 /// ];
-/// let state = state.update(data);
+/// state = state.update(data);
 /// let data = [
-///     u32::from_be_bytes([0x35, 0x36, 0x37, 0x38]),
-///     # u32::from_be_bytes([0x39, 0x30, 0x31, 0x32]),
-///     # u32::from_be_bytes([0x33, 0x34, 0x35, 0x36]),
+///     u64::from_be_bytes([0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38]),
+///     # u64::from_be_bytes([0x39, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36]),
+///     # u64::from_be_bytes([0x37, 0x38, 0x39, 0x30, 0x31, 0x32, 0x33, 0x34]),
 ///     // ...
-///     u32::from_be_bytes([0x37, 0x38, 0x39, 0x30]),
-///     u32::from_be_bytes([0x80, 0x00, 0x00, 0x00]),
-///     u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
-///     # u32::from_be_bytes([0x00, 0x00, 0x00, 0x00]),
+///     u64::from_be_bytes([0x35, 0x36, 0x37, 0x38, 0x37, 0x38, 0x39, 0x30]),
+///     u64::from_be_bytes([0x80, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
+///     # u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00]),
 ///     // ...
-///     u32::from_be_bytes([0x00, 0x00, 0x02, 0x80]),
+///     u64::from_be_bytes([0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00]),
 /// ];
-/// let state = state.update(data);
+/// state = state.update(data);
 /// assert_eq!(
 ///     state.digest(),
-///     [0xB50AECBE, 0x4E9BB0B5, 0x7BC5F3AE, 0x760A8E01, 0xDB24F203, 0xFB3CDCD1, 0x3148046E]
+///     [
+///         0xCC36AB818D88AB5B,
+///         0xD2F0D2BB96826BE3,
+///         0xA6C3A1D757B4E1C4,
+///         0xA205ED0D0E14E3F4,
+///         0xA88D7754D40B4AA1,
+///         0xFF505485ECA5C8AB,
+///     ]
 /// );
 /// ```
 #[derive(Clone, Copy, Debug, Eq, PartialEq)]
 pub struct State {
-    pub(super) a: u32,
-    pub(super) b: u32,
-    pub(super) c: u32,
-    pub(super) d: u32,
-    pub(super) e: u32,
-    pub(super) f: u32,
-    pub(super) g: u32,
-    pub(super) h: u32,
+    pub(super) a: u64,
+    pub(super) b: u64,
+    pub(super) c: u64,
+    pub(super) d: u64,
+    pub(super) e: u64,
+    pub(super) f: u64,
+    pub(super) g: u64,
+    pub(super) h: u64,
 }
 
 impl State {
@@ -173,27 +212,32 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_384;
     ///
-    /// let state = sha2::sha224::state::new();
+    /// let state = sha2_384::state::new();
     /// assert_eq!(
     ///     state.digest(),
-    ///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
+    ///     [
+    ///         0xCBBB9D5DC1059ED8,
+    ///         0x629A292A367CD507,
+    ///         0x9159015A3070DD17,
+    ///         0x152FECD8F70E5939,
+    ///         0x67332667FFC00B31,
+    ///         0x8EB44A8768581511,
+    ///     ]
     /// );
     /// ```
     #[inline]
     #[must_use]
-    pub const fn digest(&self) -> [u32; LENGTH_DWORDS] {
-        let Self {
-            a, b, c, d, e, f, g, ..
-        } = *self;
-        [a, b, c, d, e, f, g]
+    pub const fn digest(&self) -> [u64; LENGTH_QWORDS] {
+        let Self { a, b, c, d, e, f, .. } = *self;
+        [a, b, c, d, e, f]
     }
 
     #[allow(clippy::too_many_arguments)]
     #[inline]
     #[must_use]
-    const fn from_raw(a: u32, b: u32, c: u32, d: u32, e: u32, f: u32, g: u32, h: u32) -> Self {
+    const fn from_raw(a: u64, b: u64, c: u64, d: u64, e: u64, f: u64, g: u64, h: u64) -> Self {
         Self { a, b, c, d, e, f, g, h }
     }
 
@@ -202,9 +246,9 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_384;
     ///
-    /// let state = sha2::sha224::state::new();
+    /// let state = sha2_384::state::new();
     /// ```
     #[inline]
     #[must_use]
@@ -218,27 +262,34 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_384;
     ///
-    /// let mut state = sha2::sha224::state::new();
+    /// let mut state = sha2_384::state::new();
     /// let data = [0x00; 16];
     /// state = state.update(data);
     /// assert_eq!(
     ///     state.digest(),
-    ///     [0xDB04D220, 0xF639AB8E, 0x8E6B506D, 0xC54481DA, 0x63A5820F, 0x1294A139, 0x8EDCEF0E]
+    ///     [
+    ///         0x443D3F698FB0CF23,
+    ///         0x80A591795CD757AE,
+    ///         0x4A9600972C395335,
+    ///         0x98E763D795C489F7,
+    ///         0xF765EA4B8193F748,
+    ///         0x450E49EC00BC838C,
+    ///     ]
     /// );
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
     #[must_use]
-    pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
+    pub const fn update(&self, block: [u64; block::LENGTH_QWORDS]) -> Self {
         #[inline]
-        const fn small_sigma0(x: u32) -> u32 {
-            x.rotate_right(7) ^ x.rotate_right(18) ^ (x >> 3)
+        const fn small_sigma0(x: u64) -> u64 {
+            x.rotate_right(1) ^ x.rotate_right(8) ^ (x >> 7)
         }
 
         #[inline]
-        const fn small_sigma1(x: u32) -> u32 {
-            x.rotate_right(17) ^ x.rotate_right(19) ^ (x >> 10)
+        const fn small_sigma1(x: u64) -> u64 {
+            x.rotate_right(19) ^ x.rotate_right(61) ^ (x >> 6)
         }
 
         #[rustfmt::skip]
@@ -247,6 +298,10 @@ impl State {
             block[0x4], block[0x5], block[0x6], block[0x7],
             block[0x8], block[0x9], block[0xA], block[0xB],
             block[0xC], block[0xD], block[0xE], block[0xF],
+                     0,          0,          0,          0,
+                     0,          0,          0,          0,
+                     0,          0,          0,          0,
+                     0,          0,          0,          0,
                      0,          0,          0,          0,
                      0,          0,          0,          0,
                      0,          0,          0,          0,
@@ -452,34 +507,102 @@ impl State {
             .wrapping_add(w[0x38])
             .wrapping_add(small_sigma0(w[0x30]))
             .wrapping_add(w[0x2F]);
+        w[0x40] = small_sigma1(w[0x3E])
+            .wrapping_add(w[0x39])
+            .wrapping_add(small_sigma0(w[0x31]))
+            .wrapping_add(w[0x30]);
+        w[0x41] = small_sigma1(w[0x3F])
+            .wrapping_add(w[0x3A])
+            .wrapping_add(small_sigma0(w[0x32]))
+            .wrapping_add(w[0x31]);
+        w[0x42] = small_sigma1(w[0x40])
+            .wrapping_add(w[0x3B])
+            .wrapping_add(small_sigma0(w[0x33]))
+            .wrapping_add(w[0x32]);
+        w[0x43] = small_sigma1(w[0x41])
+            .wrapping_add(w[0x3C])
+            .wrapping_add(small_sigma0(w[0x34]))
+            .wrapping_add(w[0x33]);
+        w[0x44] = small_sigma1(w[0x42])
+            .wrapping_add(w[0x3D])
+            .wrapping_add(small_sigma0(w[0x35]))
+            .wrapping_add(w[0x34]);
+        w[0x45] = small_sigma1(w[0x43])
+            .wrapping_add(w[0x3E])
+            .wrapping_add(small_sigma0(w[0x36]))
+            .wrapping_add(w[0x35]);
+        w[0x46] = small_sigma1(w[0x44])
+            .wrapping_add(w[0x3F])
+            .wrapping_add(small_sigma0(w[0x37]))
+            .wrapping_add(w[0x36]);
+        w[0x47] = small_sigma1(w[0x45])
+            .wrapping_add(w[0x40])
+            .wrapping_add(small_sigma0(w[0x38]))
+            .wrapping_add(w[0x37]);
+        w[0x48] = small_sigma1(w[0x46])
+            .wrapping_add(w[0x41])
+            .wrapping_add(small_sigma0(w[0x39]))
+            .wrapping_add(w[0x38]);
+        w[0x49] = small_sigma1(w[0x47])
+            .wrapping_add(w[0x42])
+            .wrapping_add(small_sigma0(w[0x3A]))
+            .wrapping_add(w[0x39]);
+        w[0x4A] = small_sigma1(w[0x48])
+            .wrapping_add(w[0x43])
+            .wrapping_add(small_sigma0(w[0x3B]))
+            .wrapping_add(w[0x3A]);
+        w[0x4B] = small_sigma1(w[0x49])
+            .wrapping_add(w[0x44])
+            .wrapping_add(small_sigma0(w[0x3C]))
+            .wrapping_add(w[0x3B]);
+        w[0x4C] = small_sigma1(w[0x4A])
+            .wrapping_add(w[0x45])
+            .wrapping_add(small_sigma0(w[0x3D]))
+            .wrapping_add(w[0x3C]);
+        w[0x4D] = small_sigma1(w[0x4B])
+            .wrapping_add(w[0x46])
+            .wrapping_add(small_sigma0(w[0x3E]))
+            .wrapping_add(w[0x3D]);
+        w[0x4E] = small_sigma1(w[0x4C])
+            .wrapping_add(w[0x47])
+            .wrapping_add(small_sigma0(w[0x3F]))
+            .wrapping_add(w[0x3E]);
+        w[0x4F] = small_sigma1(w[0x4D])
+            .wrapping_add(w[0x48])
+            .wrapping_add(small_sigma0(w[0x40]))
+            .wrapping_add(w[0x3F]);
 
         let state = *self;
 
         #[inline]
-        const fn ch(x: u32, y: u32, z: u32) -> u32 {
+        const fn ch(x: u64, y: u64, z: u64) -> u64 {
             (x & y) ^ (!x & z)
         }
 
         #[inline]
-        const fn maj(x: u32, y: u32, z: u32) -> u32 {
+        const fn maj(x: u64, y: u64, z: u64) -> u64 {
             (x & y) ^ (x & z) ^ (y & z)
         }
 
         #[inline]
-        const fn capital_sigma0(x: u32) -> u32 {
-            x.rotate_right(2) ^ x.rotate_right(13) ^ x.rotate_right(22)
+        const fn capital_sigma0(x: u64) -> u64 {
+            x.rotate_right(28) ^ x.rotate_right(34) ^ x.rotate_right(39)
         }
 
         #[inline]
-        const fn capital_sigma1(x: u32) -> u32 {
-            x.rotate_right(6) ^ x.rotate_right(11) ^ x.rotate_right(25)
+        const fn capital_sigma1(x: u64) -> u64 {
+            x.rotate_right(14) ^ x.rotate_right(18) ^ x.rotate_right(41)
         }
 
         #[allow(clippy::too_many_arguments)]
         #[inline]
         #[rustfmt::skip]
-        const fn round(State { a, b, c, d, e, f, g, h }: State, w: u32, k: u32) -> State {
-            let t1 = h.wrapping_add(capital_sigma1(e)).wrapping_add(ch(e, f, g)).wrapping_add(k).wrapping_add(w);
+        const fn round(State { a, b, c, d, e, f, g, h }: State, w: u64, k: u64) -> State {
+            let t1 = h
+                .wrapping_add(capital_sigma1(e))
+                .wrapping_add(ch(e, f, g))
+                .wrapping_add(k)
+                .wrapping_add(w);
             let t2 = capital_sigma0(a).wrapping_add(maj(a, b, c));
             let h = g;
             let g = f;
@@ -556,6 +679,22 @@ impl State {
         let state = round(state, w[0x3D], K[0x3D]);
         let state = round(state, w[0x3E], K[0x3E]);
         let state = round(state, w[0x3F], K[0x3F]);
+        let state = round(state, w[0x40], K[0x40]);
+        let state = round(state, w[0x41], K[0x41]);
+        let state = round(state, w[0x42], K[0x42]);
+        let state = round(state, w[0x43], K[0x43]);
+        let state = round(state, w[0x44], K[0x44]);
+        let state = round(state, w[0x45], K[0x45]);
+        let state = round(state, w[0x46], K[0x46]);
+        let state = round(state, w[0x47], K[0x47]);
+        let state = round(state, w[0x48], K[0x48]);
+        let state = round(state, w[0x49], K[0x49]);
+        let state = round(state, w[0x4A], K[0x4A]);
+        let state = round(state, w[0x4B], K[0x4B]);
+        let state = round(state, w[0x4C], K[0x4C]);
+        let state = round(state, w[0x4D], K[0x4D]);
+        let state = round(state, w[0x4E], K[0x4E]);
+        let state = round(state, w[0x4F], K[0x4F]);
 
         // Update state
 
@@ -580,20 +719,34 @@ impl State {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_384;
     ///
-    /// let mut state = sha2::sha224::state::new();
+    /// let mut state = sha2_384::state::new();
     /// let data = [0x00; 16];
     /// state = state.update(data);
     /// let digest = state.digest();
     /// assert_ne!(
     ///     digest,
-    ///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
+    ///     [
+    ///         0xCBBB9D5DC1059ED8,
+    ///         0x629A292A367CD507,
+    ///         0x9159015A3070DD17,
+    ///         0x152FECD8F70E5939,
+    ///         0x67332667FFC00B31,
+    ///         0x8EB44A8768581511,
+    ///     ]
     /// );
     /// let digest = state.reset().digest();
     /// assert_eq!(
     ///     digest,
-    ///     [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
+    ///     [
+    ///         0xCBBB9D5DC1059ED8,
+    ///         0x629A292A367CD507,
+    ///         0x9159015A3070DD17,
+    ///         0x152FECD8F70E5939,
+    ///         0x67332667FFC00B31,
+    ///         0x8EB44A8768581511,
+    ///     ]
     /// );
     /// ```
     #[inline]
@@ -620,7 +773,14 @@ mod tests {
         let digest = new().digest();
         assert_eq!(
             digest,
-            [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
+            [
+                0xCBBB9D5DC1059ED8,
+                0x629A292A367CD507,
+                0x9159015A3070DD17,
+                0x152FECD8F70E5939,
+                0x67332667FFC00B31,
+                0x8EB44A8768581511,
+            ]
         );
     }
 
@@ -629,21 +789,48 @@ mod tests {
         let digest = default().digest();
         assert_eq!(
             digest,
-            [0xC1059ED8, 0x367CD507, 0x3070DD17, 0xF70E5939, 0xFFC00B31, 0x68581511, 0x64F98FA7]
+            [
+                0xCBBB9D5DC1059ED8,
+                0x629A292A367CD507,
+                0x9159015A3070DD17,
+                0x152FECD8F70E5939,
+                0x67332667FFC00B31,
+                0x8EB44A8768581511,
+            ]
         );
     }
 
     #[test]
     fn new_zeros() {
-        #[rustfmt::skip]
-        let block = [
-            0x80000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
-            0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000, 0x00000000,
+        let data = [
+            0x8000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
+            0x0000000000000000,
         ];
-        let digest = new().update(block).digest();
+        let digest = new().update(data).digest();
         assert_eq!(
             digest,
-            [0xD14A028C, 0x2A3A2BC9, 0x476102BB, 0x288234C4, 0x15A2B01F, 0x828EA62A, 0xC5B3E42F]
+            [
+                0x38B060A751AC9638,
+                0x4CD9327EB1B1E36A,
+                0x21FDB71114BE0743,
+                0x4C0CC7BF63F6E1DA,
+                0x274EDEBFE76F65FB,
+                0xD51AD2F14898B95B,
+            ]
         );
     }
 }

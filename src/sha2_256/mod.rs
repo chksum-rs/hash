@@ -1,16 +1,16 @@
-//! Implementation of SHA-2 384 hash function based on [FIPS PUB 180-4: Secure Hash Standard](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf).
+//! Implementation of SHA-2 256 hash function based on [FIPS PUB 180-4: Secure Hash Standard](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf).
 //!
 //! # Batch processing
 //!
 //! Digest of known-size data can be calculated with [`hash`] function.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_256;
 //!
-//! let digest = sha2::sha384::hash("some data");
+//! let digest = sha2_256::hash("some data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "a9c61a162f4b572a63e6b0e2b45aef473b73027d590555966a4c09185837ff72a10191c136ec3f4614d7914d1da823f0"
+//!     "1307990e6ba5ca145eb35e99182a9bec46531bc54ddf656a602c780fa0240dee"
 //! );
 //! ```
 //!
@@ -25,15 +25,15 @@
 //! use std::fs::File;
 //! use std::io::Read;
 //!
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_256;
 //!
 //! # fn wrapper(path: PathBuf) -> io::Result<()> {
 //! // Create hash instance
-//! let mut hash = sha2::sha384::new();
+//! let mut hash = sha2_256::new();
 //!
 //! // Open file and create buffer for incoming data
 //! let mut file = File::open(path)?;
-//! let mut buffer = vec![0; 128];
+//! let mut buffer = vec![0; 64];
 //!
 //! // Iterate chunk by chunk
 //! while let Ok(count) = file.read(&mut buffer) {
@@ -51,7 +51,7 @@
 //! // Cast digest to hex and compare
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "a9c61a162f4b572a63e6b0e2b45aef473b73027d590555966a4c09185837ff72a10191c136ec3f4614d7914d1da823f0"
+//!     "1307990e6ba5ca145eb35e99182a9bec46531bc54ddf656a602c780fa0240dee"
 //! );
 //! # Ok(())
 //! # }
@@ -72,29 +72,29 @@
 //! Everything that implements `AsRef<[u8]>` can be passed as an input.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_256;
 //!
-//! let digest = sha2::sha384::new()
+//! let digest = sha2_256::new()
 //!     .update("str")
 //!     .update(b"bytes")
 //!     .update([0x75, 0x38])
 //!     .digest();
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "fdf06709928130b6c22c579287e5633a1a9fc52b944c3be878211a8fa0c22a4c7f84acc6a5e86ae7017d61ed434f04d9"
+//!     "61466aaea66ab788a5f507ecd6061292c95e18fb9e144eab023a899aa96b59cb"
 //! );
 //! ```
 //!
 //! Since [`Digest`] implements `AsRef<[u8]>` then digests can be chained to implement hash digest of hash digest.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_256;
 //!
-//! let digest = sha2::sha384::hash(b"some data");
-//! let digest = sha2::sha384::hash(digest);
+//! let digest = sha2_256::hash(b"some data");
+//! let digest = sha2_256::hash(digest);
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "455ea2cb1f24dea750d5f8b1dabb253415b64e82f98e4cb7070df8b67d609b888ad9a940622b1e8d528a87e53036ca46"
+//!     "149078105941cd1edda0ec5a568fc1d178661b6441831c3647d88f41f7dfc886"
 //! );
 //! ```
 
@@ -116,12 +116,12 @@ use state::State;
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_256;
 ///
-/// let digest = sha2::sha384::new().update("data").digest();
+/// let digest = sha2_256::new().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
+///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 /// );
 /// ```
 #[inline]
@@ -137,12 +137,12 @@ pub fn new() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_256;
 ///
-/// let digest = sha2::sha384::default().update("data").digest();
+/// let digest = sha2_256::default().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
+///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 /// );
 /// ```
 #[inline]
@@ -156,12 +156,12 @@ pub fn default() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_256;
 ///
-/// let digest = sha2::sha384::hash("data");
+/// let digest = sha2_256::hash("data");
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
+///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
 /// );
 /// ```
 #[inline]
@@ -218,7 +218,7 @@ impl Update {
         );
 
         let length = {
-            let length = (unprocessed.len() + processed) as u128;
+            let length = (unprocessed.len() + processed) as u64;
             let length = length * 8; // convert byte-length into bits-length
             length.to_be_bytes()
         };
@@ -341,19 +341,19 @@ impl Update {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_256;
     ///
-    /// let hash = sha2::sha384::new().update("data").finalize();
+    /// let hash = sha2_256::new().update("data").finalize();
     /// let digest = hash.digest();
     /// assert_eq!(
     ///     digest.to_hex_lowercase(),
-    ///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
+    ///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
     /// );
     /// let hash = hash.reset();
     /// let digest = hash.digest();
     /// assert_eq!(
     ///     digest.to_hex_lowercase(),
-    ///     "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+    ///     "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     /// );
     /// ```
     #[inline]
@@ -450,13 +450,13 @@ mod tests {
         let digest = default().digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
 
         let digest = new().digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
     }
 
@@ -465,13 +465,13 @@ mod tests {
         let digest = new().update("data").reset().digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
 
         let digest = new().update("data").finalize().reset().digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
         );
     }
 
@@ -480,13 +480,13 @@ mod tests {
         let digest = new().update("Hello World").digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "99514329186b2f6ae4a1329e7ee6c610a729636335174ac6b740f9028396fcc803d0e93863a7c3d90f86beee782f4f3f"
+            "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
         );
 
         let digest = new().update("Hello").update(" ").update("World").digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "99514329186b2f6ae4a1329e7ee6c610a729636335174ac6b740f9028396fcc803d0e93863a7c3d90f86beee782f4f3f"
+            "a591a6d40bf420404a011733cfb7b190d62c65bf0bcda32b57b277d9ad9f146e"
         );
     }
 
@@ -501,24 +501,24 @@ mod tests {
         let digest = hash(phrase);
         assert_eq!(
             digest.to_hex_lowercase(),
-            "219a81f21396aa67175bb507a6ddfb238c725c5aa61e99edf89bcfd9f119c2b00ac0614249eff0b1d41a7e98b9f9278c"
+            "b2de5395f39bf32376693a9cdccc13da1d705d0eb9e9ec8c566a91f604fcc942"
         );
     }
 
     #[test]
     fn zeroes() {
-        let data = vec![0u8; 128];
+        let data = vec![0u8; 64];
 
-        let digest = new().update(&data[..120]).digest();
+        let digest = new().update(&data[..60]).update(&data[60..]).digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "7212d895f4250ce1daa72e9e0caaef7132aed2e965885c55376818e45470de06fb6ebf7349c62fd342043f18010e46ac"
+            "f5a5fd42d16a20302798ef6ed309979b43003d2320d9f0e8ea9831a92759fb4b"
         );
 
-        let digest = new().update(&data[..120]).update(&data[120..]).digest();
+        let digest = new().update(&data[..60]).digest();
         assert_eq!(
             digest.to_hex_lowercase(),
-            "f809b88323411f24a6f152e5e9d9d1b5466b77e0f3c7550f8b242c31b6e7b99bcb45bdecb6124bc23283db3b9fc4f5b3"
+            "5dcc1b5872dd9ff1c234501f1fefda01f664164e1583c3e1bb3dbea47588ab31"
         );
     }
 }

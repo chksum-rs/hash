@@ -1,16 +1,16 @@
-//! Implementation of SHA-2 512 hash function based on [FIPS PUB 180-4: Secure Hash Standard](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf).
+//! Implementation of SHA-2 384 hash function based on [FIPS PUB 180-4: Secure Hash Standard](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf).
 //!
 //! # Batch processing
 //!
 //! Digest of known-size data can be calculated with [`hash`] function.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_384;
 //!
-//! let digest = sha2::sha512::hash("some data");
+//! let digest = sha2_384::hash("some data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "e1645e7492f032fb62c674db75500be7b260bfc0daa965821ddb3f8a49b5d33788ee3f046744e2b95afb5c3d8f2500c549ca89d79fc6890885d28e055007424f"
+//!     "a9c61a162f4b572a63e6b0e2b45aef473b73027d590555966a4c09185837ff72a10191c136ec3f4614d7914d1da823f0"
 //! );
 //! ```
 //!
@@ -25,11 +25,11 @@
 //! use std::fs::File;
 //! use std::io::Read;
 //!
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_384;
 //!
 //! # fn wrapper(path: PathBuf) -> io::Result<()> {
 //! // Create hash instance
-//! let mut hash = sha2::sha512::new();
+//! let mut hash = sha2_384::new();
 //!
 //! // Open file and create buffer for incoming data
 //! let mut file = File::open(path)?;
@@ -51,7 +51,7 @@
 //! // Cast digest to hex and compare
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "e1645e7492f032fb62c674db75500be7b260bfc0daa965821ddb3f8a49b5d33788ee3f046744e2b95afb5c3d8f2500c549ca89d79fc6890885d28e055007424f"
+//!     "a9c61a162f4b572a63e6b0e2b45aef473b73027d590555966a4c09185837ff72a10191c136ec3f4614d7914d1da823f0"
 //! );
 //! # Ok(())
 //! # }
@@ -72,29 +72,29 @@
 //! Everything that implements `AsRef<[u8]>` can be passed as an input.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_384;
 //!
-//! let digest = sha2::sha512::new()
+//! let digest = sha2_384::new()
 //!     .update("str")
 //!     .update(b"bytes")
 //!     .update([0x75, 0x38])
 //!     .digest();
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "46a700a6419da55a9375a63860f441134370cc83ede59e7af64a7edbbaadfbb1132a39d0bffce951b9296b5333797e5ad62e1b03469999b4e6b005a3fb49ea98"
+//!     "fdf06709928130b6c22c579287e5633a1a9fc52b944c3be878211a8fa0c22a4c7f84acc6a5e86ae7017d61ed434f04d9"
 //! );
 //! ```
 //!
 //! Since [`Digest`] implements `AsRef<[u8]>` then digests can be chained to implement hash digest of hash digest.
 //!
 //! ```rust
-//! use chksum_hash::sha2;
+//! use chksum_hash::sha2_384;
 //!
-//! let digest = sha2::sha512::hash(b"some data");
-//! let digest = sha2::sha512::hash(digest);
+//! let digest = sha2_384::hash(b"some data");
+//! let digest = sha2_384::hash(digest);
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "e982af9db277cc3931999540e9b837807d88e2035084bf12383a2f52489b6a5201f90aaa4e72683305ea0109a459f76e3617241d086435db90a748a5b73b1d34"
+//!     "455ea2cb1f24dea750d5f8b1dabb253415b64e82f98e4cb7070df8b67d609b888ad9a940622b1e8d528a87e53036ca46"
 //! );
 //! ```
 
@@ -116,12 +116,12 @@ use state::State;
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_384;
 ///
-/// let digest = sha2::sha512::new().update("data").digest();
+/// let digest = sha2_384::new().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
+///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
 /// );
 /// ```
 #[inline]
@@ -137,12 +137,12 @@ pub fn new() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_384;
 ///
-/// let digest = sha2::sha512::default().update("data").digest();
+/// let digest = sha2_384::default().update("data").digest();
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
+///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
 /// );
 /// ```
 #[inline]
@@ -156,12 +156,12 @@ pub fn default() -> Update {
 /// # Example
 ///
 /// ```rust
-/// use chksum_hash::sha2;
+/// use chksum_hash::sha2_384;
 ///
-/// let digest = sha2::sha512::hash("data");
+/// let digest = sha2_384::hash("data");
 /// assert_eq!(
 ///     digest.to_hex_lowercase(),
-///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
+///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
 /// );
 /// ```
 #[inline]
@@ -341,19 +341,19 @@ impl Update {
     /// # Example
     ///
     /// ```rust
-    /// use chksum_hash::sha2;
+    /// use chksum_hash::sha2_384;
     ///
-    /// let hash = sha2::sha512::new().update("data").finalize();
+    /// let hash = sha2_384::new().update("data").finalize();
     /// let digest = hash.digest();
     /// assert_eq!(
     ///     digest.to_hex_lowercase(),
-    ///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
+    ///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
     /// );
     /// let hash = hash.reset();
     /// let digest = hash.digest();
     /// assert_eq!(
     ///     digest.to_hex_lowercase(),
-    ///     "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e"
+    ///     "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
     /// );
     /// ```
     #[inline]
@@ -448,28 +448,46 @@ mod tests {
     #[test]
     fn empty() {
         let digest = default().digest();
-        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+        );
 
         let digest = new().digest();
-        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+        );
     }
 
     #[test]
     fn reset() {
         let digest = new().update("data").reset().digest();
-        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+        );
 
         let digest = new().update("data").finalize().reset().digest();
-        assert_eq!(digest.to_hex_lowercase(), "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
+        );
     }
 
     #[test]
     fn hello_world() {
         let digest = new().update("Hello World").digest();
-        assert_eq!(digest.to_hex_lowercase(), "2c74fd17edafd80e8447b0d46741ee243b7eb74dd2149a0ab1b9246fb30382f27e853d8585719e0e67cbda0daa8f51671064615d645ae27acb15bfb1447f459b");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "99514329186b2f6ae4a1329e7ee6c610a729636335174ac6b740f9028396fcc803d0e93863a7c3d90f86beee782f4f3f"
+        );
 
         let digest = new().update("Hello").update(" ").update("World").digest();
-        assert_eq!(digest.to_hex_lowercase(), "2c74fd17edafd80e8447b0d46741ee243b7eb74dd2149a0ab1b9246fb30382f27e853d8585719e0e67cbda0daa8f51671064615d645ae27acb15bfb1447f459b");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "99514329186b2f6ae4a1329e7ee6c610a729636335174ac6b740f9028396fcc803d0e93863a7c3d90f86beee782f4f3f"
+        );
     }
 
     #[test]
@@ -481,7 +499,10 @@ mod tests {
                       the option to control low-level details (such as memory usage) without all the hassle \
                       traditionally associated with such control.";
         let digest = hash(phrase);
-        assert_eq!(digest.to_hex_lowercase(), "72a43851dd05d04f09faf88602c3a921867dd0410bd8ed2db223adc7586d93951e9d0367db023076bd0573064facebf127a0674d56d7ee4e3f0c3e334e277278");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "219a81f21396aa67175bb507a6ddfb238c725c5aa61e99edf89bcfd9f119c2b00ac0614249eff0b1d41a7e98b9f9278c"
+        );
     }
 
     #[test]
@@ -489,9 +510,15 @@ mod tests {
         let data = vec![0u8; 128];
 
         let digest = new().update(&data[..120]).digest();
-        assert_eq!(digest.to_hex_lowercase(), "c106c47ad6eb79cd2290681cb04cb183effbd0b49402151385b2d07be966e2d50bc9db78e00bf30bb567ccdd3a1c7847260c94173ba215a0feabb0edeb643ff0");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "7212d895f4250ce1daa72e9e0caaef7132aed2e965885c55376818e45470de06fb6ebf7349c62fd342043f18010e46ac"
+        );
 
         let digest = new().update(&data[..120]).update(&data[120..]).digest();
-        assert_eq!(digest.to_hex_lowercase(), "ab942f526272e456ed68a979f50202905ca903a141ed98443567b11ef0bf25a552d639051a01be58558122c58e3de07d749ee59ded36acf0c55cd91924d6ba11");
+        assert_eq!(
+            digest.to_hex_lowercase(),
+            "f809b88323411f24a6f152e5e9d9d1b5466b77e0f3c7550f8b242c31b6e7b99bcb45bdecb6124bc23283db3b9fc4f5b3"
+        );
     }
 }
