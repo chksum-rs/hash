@@ -1,56 +1,59 @@
-use chksum_hash::sha1;
+use chksum_hash::{default, hash, SHA1};
 
 #[test]
 fn hash_empty() {
-    let digest = sha1::hash("").to_hex_lowercase();
+    let digest = hash::<SHA1, _>("").to_hex_lowercase();
     assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 
-    let digest = sha1::hash(b"").to_hex_lowercase();
+    let digest = hash::<SHA1, _>(b"").to_hex_lowercase();
     assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 
-    let digest = sha1::hash(b"".to_vec()).to_hex_lowercase();
+    let digest = hash::<SHA1, _>(b"".to_vec()).to_hex_lowercase();
     assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 }
 
 #[test]
 fn new_empty() {
-    let digest = sha1::new().digest().to_hex_lowercase();
+    let digest = default::<SHA1>().digest().to_hex_lowercase();
     assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 
-    let digest = sha1::new().update("").digest().to_hex_lowercase();
+    let digest = default::<SHA1>().update("").digest().to_hex_lowercase();
     assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 
-    let digest = sha1::new().update(b"").digest().to_hex_lowercase();
+    let digest = default::<SHA1>().update(b"").digest().to_hex_lowercase();
     assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 
-    let digest = sha1::new().update(b"".to_vec()).digest().to_hex_lowercase();
+    let digest = default::<SHA1>().update(b"".to_vec()).digest().to_hex_lowercase();
     assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
 }
 
 #[test]
 fn hash_hello_world() {
-    let digest = sha1::hash("Hello World!").to_hex_lowercase();
+    let digest = hash::<SHA1, _>("Hello World!").to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::hash(b"Hello World!").to_hex_lowercase();
+    let digest = hash::<SHA1, _>(b"Hello World!").to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::hash(b"Hello World!".to_vec()).to_hex_lowercase();
+    let digest = hash::<SHA1, _>(b"Hello World!".to_vec()).to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 }
 
 #[test]
 fn new_hello_world() {
-    let digest = sha1::new().update("Hello World!").digest().to_hex_lowercase();
+    let digest = default::<SHA1>().update("Hello World!").digest().to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::new().update(b"Hello World!").digest().to_hex_lowercase();
+    let digest = default::<SHA1>().update(b"Hello World!").digest().to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::new().update(b"Hello World!".to_vec()).digest().to_hex_lowercase();
+    let digest = default::<SHA1>()
+        .update(b"Hello World!".to_vec())
+        .digest()
+        .to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::new()
+    let digest = default::<SHA1>()
         .update("Hello")
         .update(" ")
         .update("World!")
@@ -58,7 +61,7 @@ fn new_hello_world() {
         .to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::new()
+    let digest = default::<SHA1>()
         .update(b"Hello")
         .update(b" ")
         .update(b"World!")
@@ -66,7 +69,7 @@ fn new_hello_world() {
         .to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::new()
+    let digest = default::<SHA1>()
         .update(b"Hello".to_vec())
         .update(b" ".to_vec())
         .update(b"World!".to_vec())
@@ -74,7 +77,7 @@ fn new_hello_world() {
         .to_hex_lowercase();
     assert_eq!(digest, "2ef7bde608ce5404e97d5f042f95f89f1c232871");
 
-    let digest = sha1::new()
+    let digest = default::<SHA1>()
         .update("Hello")
         .update(b" ")
         .update(b"World!".to_vec())
