@@ -88,8 +88,7 @@
 //! ```
 
 mod block;
-#[doc(hidden)] // TODO: Add documentation to this module
-pub mod digest;
+mod digest;
 #[doc(hidden)] // TODO: Add documentation to this module
 pub mod state;
 

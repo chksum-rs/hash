@@ -105,8 +105,7 @@
 //! Check [RFC 6151: Updated Security Considerations for the MD5 Message-Digest and the HMAC-MD5 Algorithms](https://www.rfc-editor.org/rfc/rfc6151) for more details.
 
 mod block;
-#[doc(hidden)] // TODO: Add documentation to this module
-pub mod digest;
+mod digest;
 #[doc(hidden)] // TODO: Add documentation to this module
 pub mod state;
 
