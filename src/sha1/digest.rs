@@ -4,10 +4,15 @@ use super::State;
 #[cfg(feature = "error")]
 use crate::error::Error;
 
+/// Digest length in bits.
 pub const LENGTH_BITS: usize = 160;
+/// Digest length in bytes.
 pub const LENGTH_BYTES: usize = LENGTH_BITS / 8;
+/// Digest length in words (double bytes).
 pub const LENGTH_WORDS: usize = LENGTH_BYTES / 2;
+/// Digest length in double words (quadruple bytes).
 pub const LENGTH_DWORDS: usize = LENGTH_WORDS / 2;
+/// Digest length in hexadecimal format.
 pub const LENGTH_HEX: usize = LENGTH_BYTES * 2;
 
 /// Represents hash digest.
