@@ -95,6 +95,7 @@ pub mod digest;
 pub mod state;
 
 use block::Block;
+pub use block::LENGTH_BYTES as BLOCK_LENGTH_BYTES;
 pub use digest::Digest;
 use state::State;
 

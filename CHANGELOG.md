@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 
 - Added missing docs for block length consts.
+- Added `pub use` of block length bytes const.
 
 ### Changed
 
