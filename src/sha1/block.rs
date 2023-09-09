@@ -1,8 +1,12 @@
 use std::array::TryFromSliceError;
 
+/// Block length in bits.
 pub const LENGTH_BITS: usize = 512;
+/// Block length in bytes.
 pub const LENGTH_BYTES: usize = LENGTH_BITS / 8;
+/// Block length in words (double bytes).
 pub const LENGTH_WORDS: usize = LENGTH_BYTES / 2;
+/// Block length in double words (quadruple bytes).
 pub const LENGTH_DWORDS: usize = LENGTH_WORDS / 2;
 
 pub(super) struct Block([u8; LENGTH_BYTES]);
