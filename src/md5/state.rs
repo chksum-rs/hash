@@ -1,6 +1,7 @@
 //! Low-level module for raw manipulation of MD5 state.
 
-use super::block;
+use super::block::LENGTH_DWORDS as BLOCK_LENGTH_DWORDS;
+use super::digest::LENGTH_DWORDS as DIGEST_LENGTH_DWORDS;
 
 #[allow(clippy::unreadable_literal)]
 const A: u32 = 0x67452301;
@@ -181,7 +182,7 @@ impl State {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn digest(&self) -> [u32; 4] {
+    pub const fn digest(&self) -> [u32; DIGEST_LENGTH_DWORDS] {
         let Self { a, b, c, d } = *self;
         [a, b, c, d]
     }
@@ -215,7 +216,7 @@ impl State {
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
     #[must_use]
-    pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
+    pub const fn update(&self, block: [u32; BLOCK_LENGTH_DWORDS]) -> Self {
         let Self { a, b, c, d } = *self;
 
         // Round 1

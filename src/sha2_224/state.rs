@@ -1,7 +1,7 @@
 //! Low-level module for raw manipulation of SHA-2 224 state.
 
-use super::block;
-use super::digest::LENGTH_DWORDS;
+use super::block::LENGTH_DWORDS as BLOCK_LENGTH_DWORDS;
+use super::digest::LENGTH_DWORDS as DIGEST_LENGTH_DWORDS;
 
 #[allow(clippy::unreadable_literal)]
 const H: [u32; 8] = [
@@ -185,7 +185,7 @@ impl State {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn digest(&self) -> [u32; LENGTH_DWORDS] {
+    pub const fn digest(&self) -> [u32; DIGEST_LENGTH_DWORDS] {
         let Self {
             a, b, c, d, e, f, g, ..
         } = *self;
@@ -232,7 +232,7 @@ impl State {
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
     #[must_use]
-    pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
+    pub const fn update(&self, block: [u32; BLOCK_LENGTH_DWORDS]) -> Self {
         #[inline]
         const fn small_sigma0(x: u32) -> u32 {
             x.rotate_right(7) ^ x.rotate_right(18) ^ (x >> 3)

@@ -19,6 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Fixed visibility of `block` modules.
 - Fixed visibility of `digest` modules.
 - Fixed docs of `state` modules.
+- Fixed usage of `block::LENGTH_*` and `digest::LENGTH_*` consts.
 
 ### Changed
 

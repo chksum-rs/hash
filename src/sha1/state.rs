@@ -1,6 +1,7 @@
 //! Low-level module for raw manipulation of SHA-1 state.
 
-use super::block;
+use super::block::LENGTH_DWORDS as BLOCK_LENGTH_DWORDS;
+use super::digest::LENGTH_DWORDS as DIGEST_LENGTH_DWORDS;
 
 #[allow(clippy::unreadable_literal)]
 const A: u32 = 0x67452301;
@@ -166,7 +167,7 @@ impl State {
     /// ```
     #[inline]
     #[must_use]
-    pub const fn digest(&self) -> [u32; 5] {
+    pub const fn digest(&self) -> [u32; DIGEST_LENGTH_DWORDS] {
         [self.a, self.b, self.c, self.d, self.e]
     }
 
@@ -199,7 +200,7 @@ impl State {
     /// ```
     #[cfg_attr(nightly, optimize(speed))]
     #[must_use]
-    pub const fn update(&self, block: [u32; block::LENGTH_DWORDS]) -> Self {
+    pub const fn update(&self, block: [u32; BLOCK_LENGTH_DWORDS]) -> Self {
         #[rustfmt::skip]
         let mut block = [
             block[0x0], block[0x1], block[0x2], block[0x3],
