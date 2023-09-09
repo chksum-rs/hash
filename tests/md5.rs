@@ -8,7 +8,7 @@ fn hash_empty() {
     let digest = md5::hash(b"").to_hex_lowercase();
     assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
 
-    let digest = md5::hash(vec![]).to_hex_lowercase();
+    let digest = md5::hash(b"".to_vec()).to_hex_lowercase();
     assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
 }
 
@@ -23,7 +23,7 @@ fn new_empty() {
     let digest = md5::new().update(b"").digest().to_hex_lowercase();
     assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
 
-    let digest = md5::new().update(vec![]).digest().to_hex_lowercase();
+    let digest = md5::new().update(b"".to_vec()).digest().to_hex_lowercase();
     assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
 }
 
@@ -35,10 +35,7 @@ fn hash_hello_world() {
     let digest = md5::hash(b"Hello World!").to_hex_lowercase();
     assert_eq!(digest, "ed076287532e86365e841e92bfc50d8c");
 
-    let digest = md5::hash(vec![
-        0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21,
-    ])
-    .to_hex_lowercase();
+    let digest = md5::hash(b"Hello World!".to_vec()).to_hex_lowercase();
     assert_eq!(digest, "ed076287532e86365e841e92bfc50d8c");
 }
 
@@ -50,12 +47,7 @@ fn new_hello_world() {
     let digest = md5::new().update(b"Hello World!").digest().to_hex_lowercase();
     assert_eq!(digest, "ed076287532e86365e841e92bfc50d8c");
 
-    let digest = md5::new()
-        .update(vec![
-            0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21,
-        ])
-        .digest()
-        .to_hex_lowercase();
+    let digest = md5::new().update(b"Hello World!".to_vec()).digest().to_hex_lowercase();
     assert_eq!(digest, "ed076287532e86365e841e92bfc50d8c");
 
     let digest = md5::new()
@@ -75,9 +67,9 @@ fn new_hello_world() {
     assert_eq!(digest, "ed076287532e86365e841e92bfc50d8c");
 
     let digest = md5::new()
-        .update(vec![0x48, 0x65, 0x6C, 0x6C, 0x6F])
-        .update(vec![0x20])
-        .update(vec![0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21])
+        .update(b"Hello".to_vec())
+        .update(b" ".to_vec())
+        .update(b"World!".to_vec())
         .digest()
         .to_hex_lowercase();
     assert_eq!(digest, "ed076287532e86365e841e92bfc50d8c");
@@ -85,7 +77,7 @@ fn new_hello_world() {
     let digest = md5::new()
         .update("Hello")
         .update(b" ")
-        .update(vec![0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21])
+        .update(b"World!".to_vec())
         .digest()
         .to_hex_lowercase();
     assert_eq!(digest, "ed076287532e86365e841e92bfc50d8c");

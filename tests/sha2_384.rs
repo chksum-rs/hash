@@ -14,7 +14,7 @@ fn hash_empty() {
         "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
     );
 
-    let digest = sha2_384::hash(vec![]).to_hex_lowercase();
+    let digest = sha2_384::hash(b"".to_vec()).to_hex_lowercase();
     assert_eq!(
         digest,
         "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
@@ -41,7 +41,7 @@ fn new_empty() {
         "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
     );
 
-    let digest = sha2_384::new().update(vec![]).digest().to_hex_lowercase();
+    let digest = sha2_384::new().update(b"".to_vec()).digest().to_hex_lowercase();
     assert_eq!(
         digest,
         "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
@@ -62,10 +62,7 @@ fn hash_hello_world() {
         "bfd76c0ebbd006fee583410547c1887b0292be76d582d96c242d2a792723e3fd6fd061f9d5cfd13b8f961358e6adba4a"
     );
 
-    let digest = sha2_384::hash(vec![
-        0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21,
-    ])
-    .to_hex_lowercase();
+    let digest = sha2_384::hash(b"Hello World!".to_vec()).to_hex_lowercase();
     assert_eq!(
         digest,
         "bfd76c0ebbd006fee583410547c1887b0292be76d582d96c242d2a792723e3fd6fd061f9d5cfd13b8f961358e6adba4a"
@@ -87,9 +84,7 @@ fn new_hello_world() {
     );
 
     let digest = sha2_384::new()
-        .update(vec![
-            0x48, 0x65, 0x6C, 0x6C, 0x6F, 0x20, 0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21,
-        ])
+        .update(b"Hello World!".to_vec())
         .digest()
         .to_hex_lowercase();
     assert_eq!(
@@ -120,9 +115,9 @@ fn new_hello_world() {
     );
 
     let digest = sha2_384::new()
-        .update(vec![0x48, 0x65, 0x6C, 0x6C, 0x6F])
-        .update(vec![0x20])
-        .update(vec![0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21])
+        .update(b"Hello".to_vec())
+        .update(b" ".to_vec())
+        .update(b"World!".to_vec())
         .digest()
         .to_hex_lowercase();
     assert_eq!(
@@ -133,7 +128,7 @@ fn new_hello_world() {
     let digest = sha2_384::new()
         .update("Hello")
         .update(b" ")
-        .update(vec![0x57, 0x6F, 0x72, 0x6C, 0x64, 0x21])
+        .update(b"World!".to_vec())
         .digest()
         .to_hex_lowercase();
     assert_eq!(
