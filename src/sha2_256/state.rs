@@ -1,3 +1,5 @@
+//! Low-level module for raw manipulation of SHA-2 256 state.
+
 use super::block;
 use super::digest::LENGTH_DWORDS;
 

@@ -1,3 +1,5 @@
+//! Low-level module for raw manipulation of SHA-1 state.
+
 use super::block;
 
 #[allow(clippy::unreadable_literal)]

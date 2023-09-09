@@ -89,7 +89,6 @@
 
 mod block;
 mod digest;
-#[doc(hidden)] // TODO: Add documentation to this module
 pub mod state;
 
 use block::Block;
