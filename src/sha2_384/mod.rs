@@ -497,9 +497,20 @@ mod tests {
                       Through balancing powerful technical capacity and a great developer experience, Rust gives you \
                       the option to control low-level details (such as memory usage) without all the hassle \
                       traditionally associated with such control.";
+
         let digest = hash(phrase);
         assert_eq!(
             digest.to_hex_lowercase(),
+            "219a81f21396aa67175bb507a6ddfb238c725c5aa61e99edf89bcfd9f119c2b00ac0614249eff0b1d41a7e98b9f9278c"
+        );
+
+        let digest = new()
+            .update(&phrase[..BLOCK_LENGTH_BYTES - 4])
+            .update(&phrase[BLOCK_LENGTH_BYTES - 4..])
+            .digest()
+            .to_hex_lowercase();
+        assert_eq!(
+            digest,
             "219a81f21396aa67175bb507a6ddfb238c725c5aa61e99edf89bcfd9f119c2b00ac0614249eff0b1d41a7e98b9f9278c"
         );
     }

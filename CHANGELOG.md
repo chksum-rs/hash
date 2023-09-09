@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Changed `Vec` creation in tests.
 - Changed reexporting `State` structs.
 - Changed integration tests to use `default` and `new` functions.
+- Changed book phrase tests to partially fill buffer.
 
 ### Removed
 
