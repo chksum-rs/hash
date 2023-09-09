@@ -98,8 +98,7 @@
 //! );
 //! ```
 
-#[doc(hidden)] // TODO: Add documentation to this module
-pub mod block;
+mod block;
 #[doc(hidden)] // TODO: Add documentation to this module
 pub mod digest;
 #[doc(hidden)] // TODO: Add documentation to this module

@@ -14,6 +14,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Added missing docs for digest length consts.
 - Added `pub use` of digest length bytes const.
 
+### Fixed
+
+- Fixed visibility of `block` modules.
+
 ### Changed
 
 - Changed `Vec` creation in tests.

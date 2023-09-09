@@ -104,8 +104,7 @@
 //!
 //! Check [RFC 6194: Security Considerations for the SHA-0 and SHA-1 Message-Digest Algorithms](https://www.rfc-editor.org/rfc/rfc6194) for more details.
 
-#[doc(hidden)] // TODO: Add documentation to this module
-pub mod block;
+mod block;
 #[doc(hidden)] // TODO: Add documentation to this module
 pub mod digest;
 #[doc(hidden)] // TODO: Add documentation to this module
