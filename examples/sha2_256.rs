@@ -24,11 +24,11 @@ fn main() -> io::Result<()> {
                 break;
             }
             // Consume the data
-            hash = hash.update(buffer);
+            hash.update(buffer);
             reader.consume(length);
         }
 
-        let digest = hash.to_hex_lowercase();
+        let digest = hash.digest();
 
         println!("{arg} {digest}");
     }

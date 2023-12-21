@@ -1,53 +1,75 @@
-//! A simple cryptography library that provides an interface for calculating hash digests using both batch and stream computation.
+//! This crate provides an implementation of various hash functions.
 //!
 //! # Setup
 //!
-//! Update your `Cargo.toml` by adding entry to `dependencies` section.
+//! To use this crate, add the following entry to your `Cargo.toml` file in the `dependencies` section:
 //!
 //! ```toml
 //! [dependencies]
-//! # ...
-//! chksum-hash = "0.4.3"
+//! chksum-hash = "0.5.0"
 //! ```
 //!
-//! Alternatively use [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand.
+//! Alternatively, you can use the [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand:
 //!
-//! ```shell
+//! ```sh
 //! cargo add chksum-hash
-//! ```
+//! ```     
 //!
-//! # Usage
+//! # Batch Processing
 //!
-//! ## Batch processing
-//!
-//! Use [`hash`] function for batch digest calculation.
+//! The digest of known-size data can be calculated with the `hash` function.
 //!
 //! ```rust
-//! use chksum_hash::{hash, SHA2_224};
+//! use chksum_hash::sha2_224;
 //!
-//! let digest = hash::<SHA2_224, _>(b"somedata");
+//! let digest = sha2_224::hash("example data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "a39b86d838273f5ff4879c26f85e3cb333bb44d73b24f275bad1a6c6"
+//!     "90382cbfda2656313ad61fd74b32ddfa4bcc118f660bd4fba9228ced"
 //! );
 //! ```
 //!
-//! ## Stream processing
+//! # Stream Processing
 //!
-//! Use [`default`] function to create hash instance for stream digest calculation.
+//! The digest of data streams can be calculated chunk-by-chunk with a consumer created by calling the `default` function.
 //!
 //! ```rust
-//! use chksum_hash::{default, SHA2_256};
+//! // Import all necessary items
+//! # use std::io;
+//! # use std::path::PathBuf;
+//! use std::fs::File;
+//! use std::io::Read;
 //!
-//! let digest = default::<SHA2_256>()
-//!     .update("some")
-//!     .update(b"data")
-//!     .update([0, 1, 2, 3])
-//!     .digest();
+//! use chksum_hash::sha2_384;
+//!
+//! # fn wrapper(path: PathBuf) -> io::Result<()> {
+//! // Create a hash instance
+//! let mut hash = sha2_384::default();
+//!
+//! // Open a file and create a buffer for incoming data
+//! let mut file = File::open(path)?;
+//! let mut buffer = vec![0; 64];
+//!
+//! // Iterate chunk by chunk
+//! while let Ok(count) = file.read(&mut buffer) {
+//!     // EOF reached, exit loop
+//!     if count == 0 {
+//!         break;
+//!     }
+//!
+//!     // Update the hash with data
+//!     hash.update(&buffer[..count]);
+//! }
+//!
+//! // Calculate the digest
+//! let digest = hash.digest();
+//! // Cast the digest to hex and compare
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "5c3bfbc8614adc72d3ec0e9b15a1fd1c55cee63e34af5a4ff058eb2eef7d8482"
+//!     "12ecdfd463a85a301b7c29a43bf4b19cdfc6e5e86a5f40396aa6ae3368a7e5b0ed31f3bef2eb3071577ba610b4ed1cb8"
 //! );
+//! # Ok(())
+//! # }
 //! ```
 //!
 //! # Algorithms
@@ -57,1187 +79,123 @@
 //! ```rust
 //! use chksum_hash::md5;
 //!
-//! let digest = md5::hash(b"data");
+//! let digest = md5::hash("example data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "8d777f385d3dfec8815d20f7496026dc"
+//!     "5c71dbb287630d65ca93764c34d9aa0d"
 //! );
 //! ```
-//!
-//! Check [`md5`] module for more informations and usage examples.
 //!
 //! ## SHA-1
 //!
 //! ```rust
 //! use chksum_hash::sha1;
 //!
-//! let digest = sha1::hash(b"data");
+//! let digest = sha1::hash("example data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd"
+//!     "9fc42adac31303d68b444e6129f13f6093a0e045"
 //! );
 //! ```
 //!
-//! Check [`sha1`] module for more informations and usage examples.
-//!
-//! ## SHA-2
-//!
-//! ### SHA-2 224
+//! ## SHA-2 224
 //!
 //! ```rust
 //! use chksum_hash::sha2_224;
 //!
-//! let digest = sha2_224::hash(b"data");
+//! let digest = sha2_224::hash("example data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
+//!     "90382cbfda2656313ad61fd74b32ddfa4bcc118f660bd4fba9228ced"
 //! );
 //! ```
 //!
-//! Check [`sha2_224`] module for more informations and usage examples.
-//!
-//! ### SHA-2 256
+//! ## SHA-2 256
 //!
 //! ```rust
 //! use chksum_hash::sha2_256;
 //!
-//! let digest = sha2_256::hash(b"data");
+//! let digest = sha2_256::hash("example data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
+//!     "44752f37272e944fd2c913a35342eaccdd1aaf189bae50676b301ab213fc5061"
 //! );
 //! ```
 //!
-//! Check [`sha2_256`] module for more informations and usage examples.
-//!
-//! ### SHA-2 384
+//! ## SHA-2 384
 //!
 //! ```rust
 //! use chksum_hash::sha2_384;
 //!
-//! let digest = sha2_384::hash(b"data");
+//! let digest = sha2_384::hash("example data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
+//!     "12ecdfd463a85a301b7c29a43bf4b19cdfc6e5e86a5f40396aa6ae3368a7e5b0ed31f3bef2eb3071577ba610b4ed1cb8"
 //! );
 //! ```
 //!
-//! Check [`sha2_384`] module for more informations and usage examples.
-//!
-//! ### SHA-2 512
+//! ## SHA-2 512
 //!
 //! ```rust
 //! use chksum_hash::sha2_512;
 //!
-//! let digest = sha2_512::hash(b"data");
+//! let digest = sha2_512::hash("example data");
 //! assert_eq!(
 //!     digest.to_hex_lowercase(),
-//!     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
+//!     "ed59c5759a9ece516cec0c0623142d0e9fe70a27d750eee7fd38f4550d50addd873d0fa1a51fc823c1e3d5cada203f4a05d8325caacb7d3e0727a701f3f07e5f"
 //! );
 //! ```
 //!
-//! Check [`sha2_512`] module for more informations and usage examples.
+//! # Features
 //!
-//! # Feature flags
+//! Cargo features are utilized to enable or disable specific hash algorithms.
 //!
-//! ## Algorithms
+//! * `md5` enables MD5, accessible via the [`md5`] module.
+//! * `sha1` enables SHA-1, accessible via the [`sha1`] module.
+//! * `sha2-224` enables SHA-2 224, accessible via the [`sha2_224`] module.
+//! * `sha2-256` enables SHA-2 256, accessible via the [`sha2_256`] module.
+//! * `sha2-384` enables SHA-2 384, accessible via the [`sha2_384`] module.
+//! * `sha2-512` enables SHA-2 512, accessible via the [`sha2_512`] module.
 //!
-//! * `md5`: Enables MD5 hash algorithm.
-//! * `sha1`: Enables SHA-1 hash algorithm.
-//! * `sha2`: Enables SHA-2 hash family algorithms.
-//!   * `sha2-224`: Enables only SHA-2 224 hash algorithm.
-//!   * `sha2-256`: Enables only SHA-2 256 hash algorithm.
-//!   * `sha2-384`: Enables only SHA-2 384 hash algorithm.
-//!   * `sha2-512`: Enables only SHA-2 512 hash algorithm.
+//! By default, all of these features are enabled.
 //!
-//! By default all of them are enabled.
+//! To customize your setup, disable the default features and enable only those that you need in your `Cargo.toml` file:
 //!
-//! ## Compilation
+//! ```toml
+//! [dependencies]
+//! chksum-hash = { version = "0.5.0", default-features = false, features = ["md5", "sha2-512"] }
+//! ```
 //!
-//! * `error`: Adds [`Error`] related implementations.
-//! * `unstable`: Enables unstable options (like build script).
+//! Alternatively, you can use the [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand:
 //!
-//! By default only `error` is enabled.
+//! ```shell
+//! cargo add chksum-hash --no-default-features --features sha1,sha2-512
+//! ```
 //!
 //! # License
 //!
-//! MIT
+//! This crate is licensed under the MIT License.
 
 #![cfg_attr(docsrs, feature(doc_auto_cfg))]
-#![cfg_attr(nightly, feature(optimize_attribute))]
 #![forbid(unsafe_code)]
 
-use std::fmt::{LowerHex, UpperHex};
-
-#[cfg(feature = "error")]
-mod error;
+#[doc(no_inline)]
+pub use chksum_hash_core::{default, hash, Digest, Finalize, Update};
 #[cfg(feature = "md5")]
-pub mod md5;
+#[doc(no_inline)]
+pub use chksum_hash_md5 as md5;
 #[cfg(feature = "sha1")]
-pub mod sha1;
+#[doc(no_inline)]
+pub use chksum_hash_sha1 as sha1;
 #[cfg(feature = "sha2-224")]
-pub mod sha2_224;
+#[doc(no_inline)]
+pub use chksum_hash_sha2::sha2_224;
 #[cfg(feature = "sha2-256")]
-pub mod sha2_256;
+#[doc(no_inline)]
+pub use chksum_hash_sha2::sha2_256;
 #[cfg(feature = "sha2-384")]
-pub mod sha2_384;
+#[doc(no_inline)]
+pub use chksum_hash_sha2::sha2_384;
 #[cfg(feature = "sha2-512")]
-pub mod sha2_512;
-
-#[cfg(feature = "error")]
-pub use error::{Error, Result};
-
-/// Creates default hash instance.
-///
-/// # Example
-///
-/// ```rust
-/// use chksum_hash::{default, SHA2_224};
-///
-/// let digest = default::<SHA2_224>().update("data").digest();
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
-/// );
-/// ```
-#[inline]
-#[must_use]
-pub fn default<T>() -> T
-where
-    T: Update,
-{
-    T::default()
-}
-
-/// Computes hash of given input.
-///
-/// # Example
-///
-/// ```rust
-/// use chksum_hash::{hash, SHA2_256};
-///
-/// let digest = hash::<SHA2_256, _>("data");
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-/// );
-/// ```
-#[inline]
-#[must_use]
-pub fn hash<T, U>(data: U) -> T::Digest
-where
-    T: Update,
-    U: AsRef<[u8]>,
-{
-    default::<T>().update(data).digest()
-}
-
-/// A digest type.
-///
-/// Types implementing [`Digest`] are able to be returned as a digest from function [`hash`].
-pub trait Digest: AsRef<[u8]> + LowerHex + UpperHex + Eq {
-    /// Returns digest bytes as a byte slice.
-    #[inline]
-    #[must_use]
-    fn as_bytes(&self) -> &[u8] {
-        self.as_ref()
-    }
-}
-
-/// An in-progress hash type.
-///
-/// Types implementing [`Update`] are able to be used as an hash algoritm in functions [`hash`] and [`default`].
-pub trait Update: Default {
-    /// A digest type.
-    type Digest: Digest;
-
-    /// A finalized hash type.
-    type Finalize: Finalize<Digest = Self::Digest>;
-
-    /// Processes incoming data.
-    #[must_use]
-    fn update<T: AsRef<[u8]>>(self, data: T) -> Self;
-
-    /// Produces finalized state.
-    #[must_use]
-    fn finalize(&self) -> Self::Finalize;
-
-    /// Produces digest.
-    #[inline]
-    #[must_use]
-    fn digest(&self) -> Self::Digest {
-        self.finalize().digest()
-    }
-
-    /// Resets state to default.
-    #[must_use]
-    fn reset(self) -> Self;
-}
-
-/// A finalized hash type.
-pub trait Finalize {
-    /// A digest type.
-    type Digest: Digest;
-
-    /// An in-progress hash type.
-    type Update: Update;
-
-    /// Produces digest.
-    #[must_use]
-    fn digest(&self) -> Self::Digest;
-
-    /// Resets state to default.
-    #[must_use]
-    fn reset(&self) -> Self::Update;
-}
-
-/// [`md5::Update`] type alias.
-///
-/// # Examples
-///
-/// Use [`default`] function to create new hash instance.
-///
-/// ```rust
-/// use chksum_hash::{default, MD5};
-///
-/// let hash = default::<MD5>();
-/// ```
-///
-/// Use [`hash`] function to to calculate digest of given input.
-///
-/// ```rust
-/// use chksum_hash::{hash, MD5};
-///
-/// let digest = hash::<MD5, _>(b"data");
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "8d777f385d3dfec8815d20f7496026dc"
-/// );
-#[cfg(feature = "md5")]
-pub type MD5 = md5::Update;
-
-/// [`sha1::Update`] type alias.
-///
-/// # Examples
-///
-/// Use [`default`] function to create new hash instance.
-///
-/// ```rust
-/// use chksum_hash::{default, SHA1};
-///
-/// let hash = default::<SHA1>();
-/// ```
-///
-/// Use [`hash`] function to to calculate digest of given input.
-///
-/// ```rust
-/// use chksum_hash::{hash, SHA1};
-///
-/// let digest = hash::<SHA1, _>(b"data");
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd"
-/// );
-#[cfg(feature = "sha1")]
-pub type SHA1 = sha1::Update;
-
-/// [`sha2_224::Update`] type alias.
-///
-/// # Examples
-///
-/// Use [`default`] function to create new hash instance.
-///
-/// ```rust
-/// use chksum_hash::{default, SHA2_224};
-///
-/// let hash = default::<SHA2_224>();
-/// ```
-///
-/// Use [`hash`] function to to calculate digest of given input.
-///
-/// ```rust
-/// use chksum_hash::{hash, SHA2_224};
-///
-/// let digest = hash::<SHA2_224, _>(b"data");
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769"
-/// );
-#[cfg(feature = "sha2-224")]
-pub type SHA2_224 = sha2_224::Update;
-
-/// [`sha2_256::Update`] type alias.
-///
-/// # Examples
-///
-/// Use [`default`] function to create new hash instance.
-///
-/// ```rust
-/// use chksum_hash::{default, SHA2_256};
-///
-/// let hash = default::<SHA2_256>();
-/// ```
-///
-/// Use [`hash`] function to to calculate digest of given input.
-///
-/// ```rust
-/// use chksum_hash::{hash, SHA2_256};
-///
-/// let digest = hash::<SHA2_256, _>(b"data");
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-/// );
-#[cfg(feature = "sha2-256")]
-pub type SHA2_256 = sha2_256::Update;
-
-/// [`sha2_384::Update`] type alias.
-///
-/// # Examples
-///
-/// Use [`default`] function to create new hash instance.
-///
-/// ```rust
-/// use chksum_hash::{default, SHA2_384};
-///
-/// let hash = default::<SHA2_384>();
-/// ```
-///
-/// Use [`hash`] function to to calculate digest of given input.
-///
-/// ```rust
-/// use chksum_hash::{hash, SHA2_384};
-///
-/// let digest = hash::<SHA2_384, _>(b"data");
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-/// );
-#[cfg(feature = "sha2-384")]
-pub type SHA2_384 = sha2_384::Update;
-
-/// [`sha2_512::Update`] type alias.
-///
-/// # Examples
-///
-/// Use [`default`] function to create new hash instance.
-///
-/// ```rust
-/// use chksum_hash::{default, SHA2_512};
-///
-/// let hash = default::<SHA2_512>();
-/// ```
-///
-/// Use [`hash`] function to to calculate digest of given input.
-///
-/// ```rust
-/// use chksum_hash::{hash, SHA2_512};
-///
-/// let digest = hash::<SHA2_512, _>(b"data");
-/// assert_eq!(
-///     digest.to_hex_lowercase(),
-///     "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876"
-/// );
-#[cfg(feature = "sha2-512")]
-pub type SHA2_512 = sha2_512::Update;
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[cfg(feature = "md5")]
-    #[test]
-    fn default_md5_empty() {
-        let digest = default::<MD5>().digest().to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-
-        let digest = default::<MD5>().update("").digest().to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-
-        let digest = default::<MD5>().update(b"").digest().to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-
-        let digest = default::<MD5>().update(vec![]).digest().to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-    }
-
-    #[cfg(feature = "md5")]
-    #[test]
-    fn hash_md5_empty() {
-        let digest = hash::<MD5, _>("").to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-
-        let digest = hash::<MD5, _>(b"").to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-
-        let digest = hash::<MD5, _>(vec![]).to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-    }
-
-    #[cfg(feature = "md5")]
-    #[test]
-    fn default_md5_data() {
-        let digest = default::<MD5>().update("data").digest().to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>().update(b"data").digest().to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>()
-            .update(vec![0x64, 0x61, 0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>().update("da").update("ta").digest().to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>().update(b"da").update(b"ta").digest().to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>()
-            .update(vec![0x64, 0x61])
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>().update("da").update(b"ta").digest().to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>()
-            .update(b"da")
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = default::<MD5>()
-            .update(vec![0x64, 0x61])
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-    }
-
-    #[cfg(feature = "md5")]
-    #[test]
-    fn hash_md5_data() {
-        let digest = hash::<MD5, _>("data").to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = hash::<MD5, _>(b"data").to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-
-        let digest = hash::<MD5, _>(vec![0x64, 0x61, 0x74, 0x61]).to_hex_lowercase();
-        assert_eq!(digest, "8d777f385d3dfec8815d20f7496026dc");
-    }
-
-    #[cfg(feature = "md5")]
-    #[test]
-    fn default_md5_reset() {
-        let digest = default::<MD5>().update("data").reset().digest().to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-
-        let digest = default::<MD5>()
-            .update("data")
-            .finalize()
-            .reset()
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "d41d8cd98f00b204e9800998ecf8427e");
-    }
-
-    #[cfg(feature = "sha1")]
-    #[test]
-    fn default_sha1_empty() {
-        let digest = default::<SHA1>().digest().to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-
-        let digest = default::<SHA1>().update("").digest().to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-
-        let digest = default::<SHA1>().update(b"").digest().to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-
-        let digest = default::<SHA1>().update(vec![]).digest().to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-    }
-
-    #[cfg(feature = "sha1")]
-    #[test]
-    fn hash_sha1_empty() {
-        let digest = hash::<SHA1, _>("").to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-
-        let digest = hash::<SHA1, _>(b"").to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-
-        let digest = hash::<SHA1, _>(vec![]).to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-    }
-
-    #[cfg(feature = "sha1")]
-    #[test]
-    fn default_sha1_data() {
-        let digest = default::<SHA1>().update("data").digest().to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>().update(b"data").digest().to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>()
-            .update(vec![0x64, 0x61, 0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>().update("da").update("ta").digest().to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>()
-            .update(b"da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>()
-            .update(vec![0x64, 0x61])
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>().update("da").update(b"ta").digest().to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>()
-            .update(b"da")
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = default::<SHA1>()
-            .update(vec![0x64, 0x61])
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-    }
-
-    #[cfg(feature = "sha1")]
-    #[test]
-    fn hash_sha1_data() {
-        let digest = hash::<SHA1, _>("data").to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = hash::<SHA1, _>(b"data").to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-
-        let digest = hash::<SHA1, _>(vec![0x64, 0x61, 0x74, 0x61]).to_hex_lowercase();
-        assert_eq!(digest, "a17c9aaa61e80a1bf71d0d850af4e5baa9800bbd");
-    }
-
-    #[cfg(feature = "sha1")]
-    #[test]
-    fn default_sha1_reset() {
-        let digest = default::<SHA1>().update("data").reset().digest().to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-
-        let digest = default::<SHA1>()
-            .update("data")
-            .finalize()
-            .reset()
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "da39a3ee5e6b4b0d3255bfef95601890afd80709");
-    }
-
-    #[cfg(feature = "sha2-224")]
-    #[test]
-    fn default_sha2_224_empty() {
-        let digest = default::<SHA2_224>().digest().to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-
-        let digest = default::<SHA2_224>().update("").digest().to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-
-        let digest = default::<SHA2_224>().update(b"").digest().to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-
-        let digest = default::<SHA2_224>().update(vec![]).digest().to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-    }
-
-    #[cfg(feature = "sha2-224")]
-    #[test]
-    fn hash_sha2_224_empty() {
-        let digest = hash::<SHA2_224, _>("").to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-
-        let digest = hash::<SHA2_224, _>(b"").to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-
-        let digest = hash::<SHA2_224, _>(vec![]).to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-    }
-
-    #[cfg(feature = "sha2-224")]
-    #[test]
-    fn default_sha2_224_data() {
-        let digest = default::<SHA2_224>().update("data").digest().to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>().update(b"data").digest().to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>()
-            .update(vec![0x64, 0x61, 0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>()
-            .update("da")
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>()
-            .update(b"da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>()
-            .update(vec![0x64, 0x61])
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>()
-            .update("da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>()
-            .update(b"da")
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = default::<SHA2_224>()
-            .update(vec![0x64, 0x61])
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-    }
-
-    #[cfg(feature = "sha2-224")]
-    #[test]
-    fn hash_sha2_224_data() {
-        let digest = hash::<SHA2_224, _>("data").to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = hash::<SHA2_224, _>(b"data").to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-
-        let digest = hash::<SHA2_224, _>(vec![0x64, 0x61, 0x74, 0x61]).to_hex_lowercase();
-        assert_eq!(digest, "f4739673acc03c424343b452787ee23dd62999a8a9f14f4250995769");
-    }
-
-    #[cfg(feature = "sha2-224")]
-    #[test]
-    fn default_sha2_224_reset() {
-        let digest = default::<SHA2_224>().update("data").reset().digest().to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-
-        let digest = default::<SHA2_224>()
-            .update("data")
-            .finalize()
-            .reset()
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "d14a028c2a3a2bc9476102bb288234c415a2b01f828ea62ac5b3e42f");
-    }
-
-    #[cfg(feature = "sha2-256")]
-    #[test]
-    fn default_sha2_256_empty() {
-        let digest = default::<SHA2_256>().digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-
-        let digest = default::<SHA2_256>().update("").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-
-        let digest = default::<SHA2_256>().update(b"").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-
-        let digest = default::<SHA2_256>().update(vec![]).digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-    }
-
-    #[cfg(feature = "sha2-256")]
-    #[test]
-    fn hash_sha2_256_empty() {
-        let digest = hash::<SHA2_256, _>("").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-
-        let digest = hash::<SHA2_256, _>(b"").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-
-        let digest = hash::<SHA2_256, _>(vec![]).to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-    }
-
-    #[cfg(feature = "sha2-256")]
-    #[test]
-    fn default_sha2_256_data() {
-        let digest = default::<SHA2_256>().update("data").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>().update(b"data").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update(vec![0x64, 0x61, 0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update("da")
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update(b"da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update(vec![0x64, 0x61])
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update("da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update(b"da")
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update(vec![0x64, 0x61])
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-    }
-
-    #[cfg(feature = "sha2-256")]
-    #[test]
-    fn hash_sha2_256_data() {
-        let digest = hash::<SHA2_256, _>("data").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = hash::<SHA2_256, _>(b"data").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-
-        let digest = hash::<SHA2_256, _>(vec![0x64, 0x61, 0x74, 0x61]).to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "3a6eb0790f39ac87c94f3856b2dd2c5d110e6811602261a9a923d3bb23adc8b7"
-        );
-    }
-
-    #[cfg(feature = "sha2-256")]
-    #[test]
-    fn default_sha2_256_reset() {
-        let digest = default::<SHA2_256>().update("data").reset().digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-
-        let digest = default::<SHA2_256>()
-            .update("data")
-            .finalize()
-            .reset()
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
-        );
-    }
-
-    #[cfg(feature = "sha2-384")]
-    #[test]
-    fn default_sha2_384_empty() {
-        let digest = default::<SHA2_384>().digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-
-        let digest = default::<SHA2_384>().update("").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-
-        let digest = default::<SHA2_384>().update(b"").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-
-        let digest = default::<SHA2_384>().update(vec![]).digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-    }
-
-    #[cfg(feature = "sha2-384")]
-    #[test]
-    fn hash_sha2_384_empty() {
-        let digest = hash::<SHA2_384, _>("").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-
-        let digest = hash::<SHA2_384, _>(b"").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-
-        let digest = hash::<SHA2_384, _>(vec![]).to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-    }
-
-    #[cfg(feature = "sha2-384")]
-    #[test]
-    fn default_sha2_384_data() {
-        let digest = default::<SHA2_384>().update("data").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>().update(b"data").digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update(vec![0x64, 0x61, 0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update("da")
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update(b"da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update(vec![0x64, 0x61])
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update("da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update(b"da")
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update(vec![0x64, 0x61])
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-    }
-
-    #[cfg(feature = "sha2-384")]
-    #[test]
-    fn hash_sha2_384_data() {
-        let digest = hash::<SHA2_384, _>("data").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = hash::<SHA2_384, _>(b"data").to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-
-        let digest = hash::<SHA2_384, _>(vec![0x64, 0x61, 0x74, 0x61]).to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "2039e0f0b92728499fb88e23ebc3cfd0554b28400b0ed7b753055c88b5865c3c2aa72c6a1a9ae0a755d87900a4a6ff41"
-        );
-    }
-
-    #[cfg(feature = "sha2-384")]
-    #[test]
-    fn default_sha2_384_reset() {
-        let digest = default::<SHA2_384>().update("data").reset().digest().to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-
-        let digest = default::<SHA2_384>()
-            .update("data")
-            .finalize()
-            .reset()
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(
-            digest,
-            "38b060a751ac96384cd9327eb1b1e36a21fdb71114be07434c0cc7bf63f6e1da274edebfe76f65fbd51ad2f14898b95b"
-        );
-    }
-
-    #[cfg(feature = "sha2-512")]
-    #[test]
-    fn default_sha2_512_empty() {
-        let digest = default::<SHA2_512>().digest().to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-
-        let digest = default::<SHA2_512>().update("").digest().to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-
-        let digest = default::<SHA2_512>().update(b"").digest().to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-
-        let digest = default::<SHA2_512>().update(vec![]).digest().to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-    }
-
-    #[cfg(feature = "sha2-512")]
-    #[test]
-    fn hash_sha2_512_empty() {
-        let digest = hash::<SHA2_512, _>("").to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-
-        let digest = hash::<SHA2_512, _>(b"").to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-
-        let digest = hash::<SHA2_512, _>(vec![]).to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-    }
-
-    #[cfg(feature = "sha2-512")]
-    #[test]
-    fn default_sha2_512_data() {
-        let digest = default::<SHA2_512>().update("data").digest().to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>().update(b"data").digest().to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>()
-            .update(vec![0x64, 0x61, 0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>()
-            .update("da")
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>()
-            .update(b"da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>()
-            .update(vec![0x64, 0x61])
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>()
-            .update("da")
-            .update(b"ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>()
-            .update(b"da")
-            .update(vec![0x74, 0x61])
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = default::<SHA2_512>()
-            .update(vec![0x64, 0x61])
-            .update("ta")
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-    }
-
-    #[cfg(feature = "sha2-512")]
-    #[test]
-    fn hash_sha2_512_data() {
-        let digest = hash::<SHA2_512, _>("data").to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = hash::<SHA2_512, _>(b"data").to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-
-        let digest = hash::<SHA2_512, _>(vec![0x64, 0x61, 0x74, 0x61]).to_hex_lowercase();
-        assert_eq!(digest, "77c7ce9a5d86bb386d443bb96390faa120633158699c8844c30b13ab0bf92760b7e4416aea397db91b4ac0e5dd56b8ef7e4b066162ab1fdc088319ce6defc876");
-    }
-
-    #[cfg(feature = "sha2-512")]
-    #[test]
-    fn default_sha2_512_reset() {
-        let digest = default::<SHA2_512>().update("data").reset().digest().to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-
-        let digest = default::<SHA2_512>()
-            .update("data")
-            .finalize()
-            .reset()
-            .digest()
-            .to_hex_lowercase();
-        assert_eq!(digest, "cf83e1357eefb8bdf1542850d66d8007d620e4050b5715dc83f4a921d36ce9ce47d0d13c5d85f2b0ff8318d2877eec2f63b931bd47417a81a538327af927da3e");
-    }
-}
+#[doc(no_inline)]
+pub use chksum_hash_sha2::sha2_512;

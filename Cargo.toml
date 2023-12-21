@@ -1,94 +1,32 @@
 [package]
 name = "chksum-hash"
-version = "0.4.3"
+version = "0.5.0"
 authors = ["Konrad Goławski <konrad@golawski.it>"]
 edition = "2021"
-rust-version = "1.59.0"
-description = "A simple cryptography library that provides an interface for calculating hash digests using both batch and stream computation."
+rust-version = "1.63.0"
+description = "An implementation of hash algorithms for batch and stream computation."
 readme = ".cargo/README.md"
-repository = "https://github.com/ferric-bytes/chksum-hash"
+repository = "https://github.com/chksum-rs/hash"
 license = "MIT"
 keywords = ["checksum", "digest", "hash"]
-categories = ["cryptography"]
+categories = ["algorithms", "cryptography"]
 
 [package.metadata.docs.rs]
 all-features = true
 rustdoc-args = ["--cfg", "docsrs"]
 
 [dependencies]
-thiserror = { version = "1.0.31", optional = true }
-
-[build-dependencies]
-anyhow = "1.0.65"
-chksum-build = { version = "0.0.3", default-features = false, features = ["script"], optional = true }
+chksum-hash-core = "0.0.0"
+chksum-hash-md5 = { version = "0.0.0", optional = true }
+chksum-hash-sha1 = { version = "0.0.0", optional = true }
+chksum-hash-sha2 = { version = "0.0.0", default-features = false, optional = true }
 
 [features]
-default = [
-    # compilation
-    "error",
-    # algorithms
-    "md5",
-    "sha1",
-    "sha2",
-]
-
-# compilation
-error = ["thiserror"]
-unstable = ["chksum-build"]
-
-# algorithms
-md5 = []
-sha1 = []
+default = ["md5", "sha1", "sha2"]
+md5 = ["chksum-hash-md5"]
+sha1 = ["chksum-hash-sha1"]
 sha2 = ["sha2-224", "sha2-256", "sha2-384", "sha2-512"]
-sha2-224 = []
-sha2-256 = []
-sha2-384 = []
-sha2-512 = []
-
-[[test]]
-name = "md5"
-required-features = ["md5"]
-
-[[test]]
-name = "sha1"
-required-features = ["sha1"]
-
-[[test]]
-name = "sha2_224"
-required-features = ["sha2-224"]
-
-[[test]]
-name = "sha2_256"
-required-features = ["sha2-256"]
-
-[[test]]
-name = "sha2_384"
-required-features = ["sha2-384"]
-
-[[test]]
-name = "sha2_512"
-required-features = ["sha2-512"]
-
-[[example]]
-name = "md5"
-required-features = ["md5"]
-
-[[example]]
-name = "sha1"
-required-features = ["sha1"]
-
-[[example]]
-name = "sha2_224"
-required-features = ["sha2-224"]
-
-[[example]]
-name = "sha2_256"
-required-features = ["sha2-256"]
-
-[[example]]
-name = "sha2_384"
-required-features = ["sha2-384"]
-
-[[example]]
-name = "sha2_512"
-required-features = ["sha2-512"]
+sha2-224 = ["chksum-hash-sha2/224"]
+sha2-256 = ["chksum-hash-sha2/256"]
+sha2-384 = ["chksum-hash-sha2/384"]
+sha2-512 = ["chksum-hash-sha2/512"]
