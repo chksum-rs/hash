@@ -4,7 +4,7 @@
 [![Build](https://img.shields.io/github/actions/workflow/status/chksum-rs/hash/rust.yml?branch=master&style=flat-square&logo=github "Build")](https://github.com/chksum-rs/hash/actions/workflows/rust.yml)
 [![docs.rs](https://img.shields.io/docsrs/chksum-hash?style=flat-square&logo=docsdotrs "docs.rs")](https://docs.rs/chksum-hash/)
 [![MSRV](https://img.shields.io/badge/MSRV-1.63.0-informational?style=flat-square "MSRV")](https://github.com/chksum-rs/hash/blob/master/Cargo.toml)
-[![deps.rs](https://deps.rs/crate/chksum-hash/0.5.0/status.svg?style=flat-square "deps.rs")](https://deps.rs/crate/chksum-hash/0.5.0)
+[![deps.rs](https://deps.rs/crate/chksum-hash/0.5.1/status.svg?style=flat-square "deps.rs")](https://deps.rs/crate/chksum-hash/0.5.1)
 [![unsafe forbidden](https://img.shields.io/badge/unsafe-forbidden-success.svg?style=flat-square "unsafe forbidden")](https://github.com/rust-secure-code/safety-dance)
 [![LICENSE](https://img.shields.io/github/license/chksum-rs/hash?style=flat-square "LICENSE")](https://github.com/chksum-rs/hash/blob/master/LICENSE)
 
@@ -16,7 +16,7 @@ To use this crate, add the following entry to your `Cargo.toml` file in the `dep
 
 ```toml
 [dependencies]
-chksum-hash = "0.5.0"
+chksum-hash = "0.5.1"
 ```
 
 Alternatively, you can use the [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand:

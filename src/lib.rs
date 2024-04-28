@@ -6,7 +6,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! chksum-hash = "0.5.0"
+//! chksum-hash = "0.5.1"
 //! ```
 //!
 //! Alternatively, you can use the [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand:
@@ -163,7 +163,7 @@
 //!
 //! ```toml
 //! [dependencies]
-//! chksum-hash = { version = "0.5.0", default-features = false, features = ["md5", "sha2-512"] }
+//! chksum-hash = { version = "0.5.1", default-features = false, features = ["md5", "sha2-512"] }
 //! ```
 //!
 //! Alternatively, you can use the [`cargo add`](https://doc.rust-lang.org/cargo/commands/cargo-add.html) subcommand:
